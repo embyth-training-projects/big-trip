@@ -1,5 +1,7 @@
 'use strict';
 
+const DAYS_COUNT = 3;
+
 const createTripInfoTemplate = () => {
   return (
     `<section class="trip-main__trip-info  trip-info">
@@ -328,18 +330,20 @@ const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
 
-const siteHeaderElement = document.querySelector(`.trip-main`);
+const siteHeaderElement = document.querySelector(`.page-header`);
+const tripMainElement = siteHeaderElement.querySelector(`.trip-main`);
 
-render(siteHeaderElement, createTripInfoTemplate(), `beforeend`);
-render(siteHeaderElement, createSiteMenuTemplate(), `beforeend`);
+render(tripMainElement, createTripInfoTemplate(), `beforeend`);
+render(tripMainElement, createSiteMenuTemplate(), `beforeend`);
 
-const siteMainElement = document.querySelector(`.trip-events`);
+const siteMainElement = document.querySelector(`.page-main`);
+const tripEventsElement = siteMainElement.querySelector(`.trip-events`);
 
-render(siteMainElement, createTripSortTemplate(), `beforeend`);
-render(siteMainElement, createTripFormTemplate(), `beforeend`);
-render(siteMainElement, createTripListTemplate(), `beforeend`);
+render(tripEventsElement, createTripSortTemplate(), `beforeend`);
+render(tripEventsElement, createTripFormTemplate(), `beforeend`);
+render(tripEventsElement, createTripListTemplate(), `beforeend`);
 
 const tripListElement = siteMainElement.querySelector(`.trip-days`);
-render(tripListElement, createTripItemTemplate(), `beforeend`);
-render(tripListElement, createTripItemTemplate(), `beforeend`);
-render(tripListElement, createTripItemTemplate(), `beforeend`);
+for (let i = 0; i < DAYS_COUNT; i++) {
+  render(tripListElement, createTripItemTemplate(), `beforeend`);
+}
