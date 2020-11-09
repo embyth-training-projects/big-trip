@@ -53,3 +53,9 @@ const createSiteMenuTemplate = () => {
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
+
+const siteHeaderElement = document.querySelector(`.page-header`);
+const tripHeaderElement = siteHeaderElement.querySelector(`.trip-main`);
+
+render(tripHeaderElement, createTripInfoTemplate(), `beforeend`);
+render(tripHeaderElement, createSiteMenuTemplate(), `beforeend`);
