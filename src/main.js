@@ -332,3 +332,14 @@ const siteHeaderElement = document.querySelector(`.trip-main`);
 
 render(siteHeaderElement, createTripInfoTemplate(), `beforeend`);
 render(siteHeaderElement, createSiteMenuTemplate(), `beforeend`);
+
+const siteMainElement = document.querySelector(`.trip-events`);
+
+render(siteMainElement, createTripSortTemplate(), `beforeend`);
+render(siteMainElement, createTripFormTemplate(), `beforeend`);
+render(siteMainElement, createTripListTemplate(), `beforeend`);
+
+const tripListElement = siteMainElement.querySelector(`.trip-days`);
+render(tripListElement, createTripItemTemplate(), `beforeend`);
+render(tripListElement, createTripItemTemplate(), `beforeend`);
+render(tripListElement, createTripItemTemplate(), `beforeend`);
