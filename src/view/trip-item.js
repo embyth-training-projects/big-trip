@@ -47,8 +47,6 @@ export const createTripItemTemplate = () => {
 
       <ul class="trip-events__list">
         ${createTripEventTemplate()}
-        ${createTripEventTemplate()}
-        ${createTripEventTemplate()}
       </ul>
     </li>`
   );

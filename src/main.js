@@ -4,8 +4,11 @@ import {createTripSortTemplate} from './view/sort';
 import {createTripListTemplate} from './view/trip-list';
 import {createTripItemTemplate} from './view/trip-item';
 import {createTripFormTemplate} from './view/trip-form';
+import {generateTrip} from './mock/trip';
 
-const DAYS_COUNT = 3;
+const TRIP_EVENTS = 20;
+
+const events = new Array(TRIP_EVENTS).fill().map(generateTrip);
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -23,6 +26,6 @@ render(tripEventsElement, createTripFormTemplate(), `beforeend`);
 render(tripEventsElement, createTripListTemplate(), `beforeend`);
 
 const tripListElement = siteMainElement.querySelector(`.trip-days`);
-for (let i = 0; i < DAYS_COUNT; i++) {
-  render(tripListElement, createTripItemTemplate(), `beforeend`);
+for (let i = 0; i < TRIP_EVENTS; i++) {
+  render(tripListElement, createTripItemTemplate(events[i]), `beforeend`);
 }
