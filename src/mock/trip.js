@@ -35,7 +35,7 @@ const generateDescription = () => {
   const randomLength = getRandomInteger(0, MAX_DESCRIPTION_SENTENCES);
   const randomDescription = [];
   for (let i = 0; i < randomLength; i++) {
-    const randomIndex = getRandomInteger(0, SENTENCES.length);
+    const randomIndex = getRandomInteger(0, SENTENCES.length - 1);
     randomDescription.push(SENTENCES[randomIndex]);
   }
 
@@ -44,13 +44,13 @@ const generateDescription = () => {
 
 const generateType = () => {
   const tripTypes = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`, `Check-in`, `Sightseeing`, `Restaurant`];
-  const randomIndex = getRandomInteger(1, tripTypes.length);
+  const randomIndex = getRandomInteger(1, tripTypes.length - 1);
   return tripTypes[randomIndex];
 };
 
 const generateCity = () => {
   const cities = [`Amsterdam`, `Geneva`, `Chamonix`, `Saint Petersburg`, `Berlin`, `Paris`, `Monaco`, `London`];
-  const randomIndex = getRandomInteger(1, cities.length);
+  const randomIndex = getRandomInteger(1, cities.length - 1);
   return cities[randomIndex];
 };
 
@@ -71,7 +71,7 @@ const generateOffers = () => {
   const randomOffers = [];
 
   for (let i = 0; i < randomLength; i++) {
-    const randomIndex = getRandomInteger(0, offerTitles.length);
+    const randomIndex = getRandomInteger(0, offerTitles.length - 1);
     randomOffers.push({
       title: offerTitles[randomIndex],
       price: getRandomInteger(OFFER.MIN_PRICE, OFFER.MAX_PRICE),
@@ -86,7 +86,7 @@ const generatePhotos = () => {
   const randomPhotos = [];
 
   for (let i = 0; i < randomLength; i++) {
-    const randomIndex = getRandomInteger(0, SENTENCES.length);
+    const randomIndex = getRandomInteger(0, SENTENCES.length - 1);
     randomPhotos.push({
       src: `https://picsum.photos/248/152?r=${Math.random()}`,
       description: SENTENCES[randomIndex],
