@@ -1,13 +1,8 @@
 const MAX_DESCRIPTION_SENTENCES = 5;
 const MAX_PHOTOS_COUNT = 5;
-const OFFER = {
-  MIN_PRICE: 5,
-  MAX_PRICE: 200,
-  MAX_COUNT: 5
-};
 const PRICE = {
-  MIN: 200,
-  MAX: 3000,
+  MIN: 10,
+  MAX: 500,
 };
 
 const SENTENCES = [
@@ -43,7 +38,7 @@ const generateDescription = () => {
 };
 
 const generateType = () => {
-  const tripTypes = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`, `Check-in`, `Sightseeing`, `Restaurant`];
+  const tripTypes = [`taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`, `check-in`, `sightseeing`, `restaurant`];
   const randomIndex = getRandomInteger(1, tripTypes.length - 1);
   return tripTypes[randomIndex];
 };
@@ -54,31 +49,21 @@ const generateCity = () => {
   return cities[randomIndex];
 };
 
-const generateOffers = () => {
-  const offerTitles = [
-    `Upgrade to a business class`,
-    `Choose the radio station`,
-    `Order Uber`,
-    `Add luggage`,
-    `Switch to comfort`,
-    `Rent a car`,
-    `Add breakfast`,
-    `Book tickets`,
-    `Lunch in city`,
+const generateOffers = (type) => {
+  const offers = [
+    {name: `seats`, label: `Choose seats`, price: 5, isChecked: Boolean(getRandomInteger(0, 1)), types: [`flight`, `train`]},
+    {name: `meal`, label: `Add meal`, price: 15, isChecked: Boolean(getRandomInteger(0, 1)), types: [`flight`, `train`, `ship`]},
+    {name: `uber`, label: `Order Uber`, price: 20, isChecked: Boolean(getRandomInteger(0, 1)), types: [`taxi`]},
+    {name: `luggage`, label: `Add luggage`, price: 30, isChecked: Boolean(getRandomInteger(0, 1)), types: [`flight`, `train`, `ship`, `bus`, `transport`, `taxi`]},
+    {name: `lunch`, label: `Lunch in city`, price: 30, isChecked: Boolean(getRandomInteger(0, 1)), types: [`sightseeing`, `check-in`]},
+    {name: `train`, label: `Travel by train`, price: 40, isChecked: Boolean(getRandomInteger(0, 1)), types: [`check-in`]},
+    {name: `tickets`, label: `Book tickets`, price: 40, isChecked: Boolean(getRandomInteger(0, 1)), types: [`sightseeing`, `bus`]},
+    {name: `breakfast`, label: `Add breakfast`, price: 50, isChecked: Boolean(getRandomInteger(0, 1)), types: [`sightseeing`, `check-in`]},
+    {name: `comfort`, label: `Switch to comfort`, price: 100, isChecked: Boolean(getRandomInteger(0, 1)), types: [`flight`, `train`, `ship`, `taxi`]},
+    {name: `rent`, label: `Rent a car`, price: 200, isChecked: Boolean(getRandomInteger(0, 1)), types: [`drive`]},
   ];
 
-  const randomLength = getRandomInteger(0, OFFER.MAX_COUNT);
-  const randomOffers = [];
-
-  for (let i = 0; i < randomLength; i++) {
-    const randomIndex = getRandomInteger(0, offerTitles.length - 1);
-    randomOffers.push({
-      title: offerTitles[randomIndex],
-      price: getRandomInteger(OFFER.MIN_PRICE, OFFER.MAX_PRICE),
-    });
-  }
-
-  return randomOffers;
+  return offers.filter((offer) => offer.types.includes(type));
 };
 
 const generatePhotos = () => {
@@ -100,15 +85,9 @@ const generatePrice = () => {
   return getRandomInteger(PRICE.MIN, PRICE.MAX);
 };
 
-const generateDate = (dateFrom = null) => {
+const generateDate = () => {
   let currentDate = new Date();
-
-  if (dateFrom) {
-    currentDate = new Date(dateFrom);
-    currentDate.setDate(dateFrom.getDate() + getRandomInteger(0, 7));
-  } else {
-    currentDate.setDate(currentDate.getDate() + getRandomInteger(0, 365));
-  }
+  currentDate.setDate(currentDate.getDate() + getRandomInteger(0, 5));
 
   const hour = getRandomInteger(0, 23);
   const minutes = getRandomInteger(0, 59);
@@ -122,18 +101,20 @@ const generateDate = (dateFrom = null) => {
 };
 
 export const generateTrip = () => {
-  const dateFrom = generateDate();
-  const dateTo = generateDate(dateFrom);
+  const type = generateType();
 
   return {
-    description: generateDescription(),
-    type: generateType(),
-    destinationPoint: generateCity(),
-    offers: generateOffers(),
-    photos: generatePhotos(),
+    city: {
+      name: generateCity(),
+      description: generateDescription(),
+      photos: generatePhotos(),
+    },
+    type: {
+      name: type,
+      offers: generateOffers(type),
+    },
     price: generatePrice(),
-    dateFrom,
-    dateTo,
+    dateRange: [generateDate(), generateDate()].sort((a, b) => a.getTime() - b.getTime()),
     id: null,
     isFavorite: Boolean(getRandomInteger()),
   };
