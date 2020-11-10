@@ -44,13 +44,13 @@ const generateDescription = () => {
 
 const generateType = () => {
   const tripTypes = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`, `Check-in`, `Sightseeing`, `Restaurant`];
-  const randomIndex = getRandomInteger(0, tripTypes.length);
+  const randomIndex = getRandomInteger(1, tripTypes.length);
   return tripTypes[randomIndex];
 };
 
 const generateCity = () => {
   const cities = [`Amsterdam`, `Geneva`, `Chamonix`, `Saint Petersburg`, `Berlin`, `Paris`, `Monaco`, `London`];
-  const randomIndex = getRandomInteger(0, cities.length);
+  const randomIndex = getRandomInteger(1, cities.length);
   return cities[randomIndex];
 };
 
