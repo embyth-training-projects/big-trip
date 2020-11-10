@@ -1,18 +1,15 @@
-const DIVIDER = `&nbsp;&mdash;&nbsp;`;
-const MAX_CITIES_DISPLAY = 3;
+import {formatMonthDate} from '../utils';
+import {MAX_CITIES_DISPLAY, TEXT_DIVIDER} from '../const';
+
 
 const getTripCitiesName = (events) => {
   let cities = events.map((item) => item.city.name);
 
   if (cities.length < MAX_CITIES_DISPLAY) {
-    return `${cities.join(DIVIDER)}`;
+    return `${cities.join(TEXT_DIVIDER)}`;
   } else {
-    return `${cities[0]}${DIVIDER}...${DIVIDER}${cities[cities.length - 1]}`;
+    return `${cities[0]}${TEXT_DIVIDER}...${TEXT_DIVIDER}${cities[cities.length - 1]}`;
   }
-};
-
-const formatMonthDate = (date) => {
-  return date.toLocaleString(`en-US`, {month: `short`, day: `2-digit`});
 };
 
 const getTripDates = (events) => {
@@ -21,9 +18,9 @@ const getTripDates = (events) => {
   const endDate = dates[dates.length - 1][1];
 
   if (startDate.getMonth() === endDate.getMonth()) {
-    return `${formatMonthDate(startDate)}${DIVIDER}${endDate.getDate()}`;
+    return `${formatMonthDate(startDate)}${TEXT_DIVIDER}${endDate.getDate()}`;
   } else {
-    return `${formatMonthDate(startDate)}${DIVIDER}${formatMonthDate(endDate)}`;
+    return `${formatMonthDate(startDate)}${TEXT_DIVIDER}${formatMonthDate(endDate)}`;
   }
 };
 

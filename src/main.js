@@ -4,17 +4,13 @@ import {createTripSortTemplate} from './view/sort';
 import {createTripListTemplate} from './view/trip-list';
 import {createTripFormTemplate} from './view/trip-form';
 import {generateTrip} from './mock/trip';
-
-const TRIP_EVENTS_COUNT = 20;
+import {render} from './utils';
+import {TRIP_EVENTS_COUNT} from './const';
 
 const events = new Array(TRIP_EVENTS_COUNT)
   .fill()
   .map(generateTrip)
   .sort((a, b) => a.dateRange[0].getTime() - b.dateRange[0].getTime());
-
-const render = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
-};
 
 const siteHeaderElement = document.querySelector(`.page-header`);
 const tripMainElement = siteHeaderElement.querySelector(`.trip-main`);

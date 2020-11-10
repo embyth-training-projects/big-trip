@@ -1,4 +1,5 @@
-const setWithInPretext = new Set([`sightseeing`, `restaurant`, `check-in`]);
+import {formatEventType, formatTime} from '../utils';
+import {MAX_OFFERS_DISPLAY} from '../const';
 
 const createOfferItemTemplate = (offer) => {
   const {label, price} = offer;
@@ -13,15 +14,13 @@ const createOfferItemTemplate = (offer) => {
 };
 
 const createOffersTemplate = (offers) => {
-  const MAX_OFFERS_COUNT = 3;
-
   if (offers.length) {
     return (
       `<h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
         ${offers
           .filter((offer) => offer.isChecked)
-          .slice(0, MAX_OFFERS_COUNT)
+          .slice(0, MAX_OFFERS_DISPLAY)
           .map(createOfferItemTemplate)
           .join(``)}
       </ul>`
@@ -29,16 +28,6 @@ const createOffersTemplate = (offers) => {
   } else {
     return ``;
   }
-};
-
-const formatTime = (date) => {
-  return date.toLocaleString(`en-GB`, {hour: `2-digit`, minute: `2-digit`});
-};
-
-const formatEventType = (type) => {
-  const typeText = type.charAt(0).toUpperCase() + type.slice(1);
-  const label = setWithInPretext.has(type) ? `in` : `to`;
-  return `${typeText} ${label} `;
 };
 
 const getDuration = (dateRange) => {

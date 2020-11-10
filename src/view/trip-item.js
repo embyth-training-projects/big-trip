@@ -1,8 +1,5 @@
 import {createTripEventTemplate} from './trip-event';
-
-const formatMonthDate = (date) => {
-  return date.toLocaleString(`en-US`, {month: `short`, day: `2-digit`});
-};
+import {formatMonthDate} from '../utils';
 
 export const createTripItemTemplate = (events, day, index) => {
   if (day.length) {

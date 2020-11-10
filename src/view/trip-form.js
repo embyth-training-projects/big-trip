@@ -1,22 +1,4 @@
-const setWithInPretext = new Set([`sightseeing`, `restaurant`, `check-in`]);
-
-const formatEventType = (type) => {
-  const typeText = type.charAt(0).toUpperCase() + type.slice(1);
-  const label = setWithInPretext.has(type) ? `in` : `to`;
-  return `${typeText} ${label} `;
-};
-
-const formatDate = (date) => {
-  return date.toLocaleString(`en-En`, {day: `2-digit`, month: `2-digit`, year: `2-digit`});
-};
-
-const formatTime = (date) => {
-  return date.toLocaleString(`en-GB`, {hour: `2-digit`, minute: `2-digit`});
-};
-
-const formatDateTime = (date) => {
-  return `${formatDate(date)} ${formatTime(date)}`;
-};
+import {formatEventType, formatDateTime} from '../utils';
 
 const createOfferItemTemplate = (offer) => {
   const {name, label, price, isChecked} = offer;
