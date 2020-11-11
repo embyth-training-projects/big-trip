@@ -1,4 +1,4 @@
-import {formatEventType, formatDateTime} from '../utils';
+import {formatEventType, formatDateTime, createElement} from '../utils';
 
 const createOfferItemTemplate = (offer) => {
   const {name, label, price, isChecked} = offer;
@@ -53,7 +53,7 @@ const createPhotosTemplate = (photos) => {
   }
 };
 
-export const createTripFormTemplate = (event) => {
+const createTripFormTemplate = (event) => {
   const {city, type, price, dateRange} = event;
   const {name: cityName, description, photos} = city;
   const {name: typeName, offers} = type;
@@ -187,3 +187,27 @@ export const createTripFormTemplate = (event) => {
     </form>`
   );
 };
+
+
+export default class TripForm {
+  constructor(event) {
+    this._event = event;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripFormTemplate(this._event);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
