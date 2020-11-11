@@ -1,11 +1,11 @@
-import {createSiteMenuTemplate} from './view/site-menu';
+import SiteMenuView from './view/site-menu';
 import {createTripInfoTemplate} from './view/trip-info';
 import {createTripSortTemplate} from './view/sort';
 import {createTripListTemplate} from './view/trip-list';
 import {createTripFormTemplate} from './view/trip-form';
 import {generateTrip} from './mock/trip';
-import {renderTemplate} from './utils';
-import {TRIP_EVENTS_COUNT} from './const';
+import {renderTemplate, renderElement} from './utils';
+import {TRIP_EVENTS_COUNT, RenderPosition} from './const';
 
 const events = new Array(TRIP_EVENTS_COUNT)
   .fill()
@@ -15,7 +15,7 @@ const events = new Array(TRIP_EVENTS_COUNT)
 const siteHeaderElement = document.querySelector(`.page-header`);
 const tripMainElement = siteHeaderElement.querySelector(`.trip-main`);
 renderTemplate(tripMainElement, createTripInfoTemplate(events), `beforeend`);
-renderTemplate(tripMainElement, createSiteMenuTemplate(), `beforeend`);
+renderElement(tripMainElement, new SiteMenuView().getElement(), RenderPosition.BEFOREEND);
 
 const siteMainElement = document.querySelector(`.page-main`);
 const tripEventsElement = siteMainElement.querySelector(`.trip-events`);

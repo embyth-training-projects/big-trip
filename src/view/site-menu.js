@@ -1,4 +1,6 @@
-export const createSiteMenuTemplate = () => {
+import {createElement} from '../utils';
+
+const createSiteMenuTemplate = () => {
   return (
     `<div class="trip-main__trip-controls  trip-controls">
       <h2 class="visually-hidden">Switch trip view</h2>
@@ -31,3 +33,25 @@ export const createSiteMenuTemplate = () => {
     <button class="trip-main__event-add-btn  btn  btn--big  btn--yellow" type="button">New event</button>`
   );
 };
+
+export default class SiteMenu {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createSiteMenuTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
