@@ -1,6 +1,5 @@
-import {formatMonthDate} from '../utils';
+import {formatMonthDate, createElement} from '../utils';
 import {MAX_CITIES_DISPLAY, TEXT_DIVIDER} from '../const';
-
 
 const getTripCitiesName = (events) => {
   let cities = events.map((item) => item.city.name);
@@ -28,7 +27,7 @@ const getTotalTripCost = (events) => {
   return events.reduce((total, item) => total + item.price, 0);
 };
 
-export const createTripInfoTemplate = (events) => {
+const createTripInfoTemplate = (events) => {
   const route = getTripCitiesName(events);
   const dates = getTripDates(events);
   const totalCost = getTotalTripCost(events);
@@ -47,3 +46,26 @@ export const createTripInfoTemplate = (events) => {
     </section>`
   );
 };
+
+export default class TripInfo {
+  constructor(events) {
+    this._events = events;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripInfoTemplate(this._events);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
