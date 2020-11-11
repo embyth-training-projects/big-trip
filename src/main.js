@@ -4,7 +4,7 @@ import {createTripSortTemplate} from './view/sort';
 import {createTripListTemplate} from './view/trip-list';
 import {createTripFormTemplate} from './view/trip-form';
 import {generateTrip} from './mock/trip';
-import {render} from './utils';
+import {renderTemplate} from './utils';
 import {TRIP_EVENTS_COUNT} from './const';
 
 const events = new Array(TRIP_EVENTS_COUNT)
@@ -14,11 +14,11 @@ const events = new Array(TRIP_EVENTS_COUNT)
 
 const siteHeaderElement = document.querySelector(`.page-header`);
 const tripMainElement = siteHeaderElement.querySelector(`.trip-main`);
-render(tripMainElement, createTripInfoTemplate(events), `beforeend`);
-render(tripMainElement, createSiteMenuTemplate(), `beforeend`);
+renderTemplate(tripMainElement, createTripInfoTemplate(events), `beforeend`);
+renderTemplate(tripMainElement, createSiteMenuTemplate(), `beforeend`);
 
 const siteMainElement = document.querySelector(`.page-main`);
 const tripEventsElement = siteMainElement.querySelector(`.trip-events`);
-render(tripEventsElement, createTripSortTemplate(), `beforeend`);
-render(tripEventsElement, createTripFormTemplate(events[0]), `beforeend`);
-render(tripEventsElement, createTripListTemplate(events.slice(1)), `beforeend`);
+renderTemplate(tripEventsElement, createTripSortTemplate(), `beforeend`);
+renderTemplate(tripEventsElement, createTripFormTemplate(events[0]), `beforeend`);
+renderTemplate(tripEventsElement, createTripListTemplate(events.slice(1)), `beforeend`);
