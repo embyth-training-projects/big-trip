@@ -10,5 +10,6 @@ export const setWithInPretext = new Set([`sightseeing`, `restaurant`, `check-in`
 
 export const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
+  AFTEREND: `afterend`,
   BEFOREEND: `beforeend`,
 };
