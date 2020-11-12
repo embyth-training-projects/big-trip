@@ -10,7 +10,7 @@ import TripFormView from './view/trip-form';
 import NoEventView from './view/no-event';
 import {generateTrip} from './mock/trip';
 import {render, getTripDays, filterEventsByDay} from './utils';
-import {TRIP_EVENTS_COUNT, RenderPosition} from './const';
+import {TRIP_EVENTS_COUNT, RenderPosition, KeyCode} from './const';
 
 const events = new Array(TRIP_EVENTS_COUNT)
   .fill()
@@ -36,17 +36,28 @@ const addEventsActions = (eventContainer, eventComponent, eventEditComonent) => 
     eventContainer.replaceChild(eventComponent.getElement(), eventEditComonent.getElement());
   };
 
+  const onEscKeyDown = (evt) => {
+    if (evt.keyCode === KeyCode.ESC || evt.key === `Esc` || evt.code === `Escape`) {
+      evt.preventDefault();
+      replaceFormToPoint();
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
+  };
+
   eventComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
     replacePointToForm();
+    document.addEventListener(`keydown`, onEscKeyDown);
   });
 
   eventEditComonent.getElement().addEventListener(`submit`, (evt) => {
     evt.preventDefault();
     replaceFormToPoint();
+    document.removeEventListener(`keydown`, onEscKeyDown);
   });
 
   eventEditComonent.getElement().addEventListener(`reset`, () => {
     replaceFormToPoint();
+    document.removeEventListener(`keydown`, onEscKeyDown);
   });
 };
 
