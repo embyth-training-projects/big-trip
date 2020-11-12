@@ -1,4 +1,4 @@
-import {formatEventType, formatTime} from '../utils';
+import {formatEventType, formatTime, createElement} from '../utils';
 import {MAX_OFFERS_DISPLAY} from '../const';
 
 const createOfferItemTemplate = (offer) => {
@@ -41,7 +41,7 @@ const getDuration = (dateRange) => {
   return `${diffDay} ${diffHour} ${diffMinutes}`;
 };
 
-export const createTripEventTemplate = (event) => {
+const createTripEventTemplate = (event) => {
   const {city, type, price, dateRange} = event;
   const {name: cityName} = city;
   const {name: typeName, offers} = type;
@@ -85,3 +85,26 @@ export const createTripEventTemplate = (event) => {
     </li>`
   );
 };
+
+export default class TripEvent {
+  constructor(event) {
+    this._event = event;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripEventTemplate(this._event);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

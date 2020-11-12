@@ -1,30 +1,30 @@
-import {createTripItemTemplate} from './trip-item';
-import {formatDate} from '../utils';
+import {createElement} from '../utils';
 
-const getTripDays = (events) => {
-  const dates = events.map((day) => formatDate(day.dateRange[0]));
-  return [...new Set(dates)];
+const createTripListTemplate = () => {
+  return (
+    `<ul class="trip-days"></ul>`
+  );
 };
 
-const filterEventsByDay = (events, day) => {
-  return events.filter((event) => formatDate(event.dateRange[0]) === day);
-};
-
-export const createTripListTemplate = (events) => {
-  const days = getTripDays(events);
-
-  if (days.length) {
-    return (
-      `<ul class="trip-days">
-        ${days
-          .map((day, index) => {
-            const filteredEventsByDay = filterEventsByDay(events, day);
-            return createTripItemTemplate(filteredEventsByDay, day, index + 1);
-          })
-          .join(``)}
-      </ul>`
-    );
-  } else {
-    return `<p class="trip-events__msg">Click New Event to create your first point</p>`;
+export default class TripList {
+  constructor(events) {
+    this._events = events;
+    this._element = null;
   }
-};
+
+  getTemplate() {
+    return createTripListTemplate(this._events);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

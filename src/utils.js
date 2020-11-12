@@ -53,3 +53,12 @@ export const formatDateTime = (date) => {
 export const formatMonthDate = (date) => {
   return date.toLocaleString(`en-US`, {month: `short`, day: `2-digit`});
 };
+
+export const getTripDays = (events) => {
+  const dates = events.map((day) => formatDate(day.dateRange[0]));
+  return [...new Set(dates)];
+};
+
+export const filterEventsByDay = (events, day) => {
+  return events.filter((event) => formatDate(event.dateRange[0]) === day);
+};

@@ -1,7 +1,6 @@
-import {createTripEventTemplate} from './trip-event';
-import {formatMonthDate} from '../utils';
+import {createElement, formatMonthDate} from '../utils';
 
-export const createTripItemTemplate = (events, day, index) => {
+const createTripItemTemplate = (day, index) => {
   if (day.length) {
     const formattedDate = formatMonthDate(new Date(day));
 
@@ -12,14 +11,34 @@ export const createTripItemTemplate = (events, day, index) => {
           <time class="day__date" datetime="${day}">${formattedDate}</time>
         </div>
 
-        <ul class="trip-events__list">
-          ${events
-            .map((event) => createTripEventTemplate(event))
-            .join(``)}
-        </ul>
+        <ul class="trip-events__list" data-day="${day}"></ul>
       </li>`
     );
   } else {
     return ``;
   }
 };
+
+export default class TripDay {
+  constructor(day, index) {
+    this._day = day;
+    this._index = index;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripItemTemplate(this._day, this._index);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
