@@ -27,6 +27,29 @@ render(menuContainer, new MenuView().getElement(), RenderPosition.AFTEREND);
 render(filterContainer, new FilterView().getElement(), RenderPosition.AFTEREND);
 render(tripMainElement, new NewEventButtonView().getElement(), RenderPosition.BEFOREEND);
 
+const addEventsActions = (eventContainer, eventComponent, eventEditComonent) => {
+  const replacePointToForm = () => {
+    eventContainer.replaceChild(eventEditComonent.getElement(), eventComponent.getElement());
+  };
+
+  const replaceFormToPoint = () => {
+    eventContainer.replaceChild(eventComponent.getElement(), eventEditComonent.getElement());
+  };
+
+  eventComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
+    replacePointToForm();
+  });
+
+  eventEditComonent.getElement().addEventListener(`submit`, (evt) => {
+    evt.preventDefault();
+    replaceFormToPoint();
+  });
+
+  eventEditComonent.getElement().addEventListener(`reset`, () => {
+    replaceFormToPoint();
+  });
+};
+
 const createEventsList = () => {
   const eventsListComponent = new TripListView(events);
 
@@ -39,7 +62,9 @@ const createEventsList = () => {
       const eventComponent = new TripEventView(event);
       const eventEditComonent = new TripFormView(event);
 
-      render(tripDayComponent.getElement().querySelector(`.trip-events__list[data-day="${day}"]`), eventComponent.getElement(), RenderPosition.BEFOREEND);
+      const eventDayContainer = tripDayComponent.getElement().querySelector(`.trip-events__list[data-day="${day}"]`);
+      render(eventDayContainer, eventComponent.getElement(), RenderPosition.BEFOREEND);
+      addEventsActions(eventDayContainer, eventComponent, eventEditComonent);
     });
   });
 
