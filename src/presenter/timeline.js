@@ -17,6 +17,8 @@ export default class Timeline {
 
     this._sortComponent = new SortView();
     this._noEventsComponent = new NoEventView();
+
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
   init(events) {
@@ -27,7 +29,12 @@ export default class Timeline {
     this._renderTimeline();
   }
 
+  _handleSortTypeChange(sortType) {
+
+  }
+
   _renderSort() {
+    this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
     render(this._timelineContainer, this._sortComponent, RenderPosition.BEFOREEND);
   }
 
