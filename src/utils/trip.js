@@ -30,3 +30,11 @@ export const getTripDays = (events) => {
 export const filterEventsByDay = (events, day) => {
   return events.filter((event) => formatDate(event.dateRange[0]) === day);
 };
+
+export const sortEventsByTime = (eventA, eventB) => {
+  return new Date(eventB.dateRange[1] - eventB.dateRange[0]).getTime() - new Date(eventA.dateRange[1] - eventA.dateRange[0]).getTime();
+};
+
+export const sortEventsByPrice = (eventA, eventB) => {
+  return eventB.price - eventA.price;
+};
