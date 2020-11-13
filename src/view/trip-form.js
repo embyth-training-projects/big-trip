@@ -1,4 +1,5 @@
-import {formatEventType, formatDateTime, createElement} from '../utils';
+import AbstractView from './abstract';
+import {formatEventType, formatDateTime} from '../utils';
 
 const createOfferItemTemplate = (offer) => {
   const {name, label, price, isChecked} = offer;
@@ -190,25 +191,14 @@ const createTripFormTemplate = (event) => {
 };
 
 
-export default class TripForm {
+export default class TripForm extends AbstractView {
   constructor(event) {
+    super();
+
     this._event = event;
-    this._element = null;
   }
 
   getTemplate() {
     return createTripFormTemplate(this._event);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

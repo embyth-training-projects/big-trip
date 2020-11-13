@@ -1,4 +1,5 @@
-import {formatMonthDate, createElement} from '../utils';
+import AbstractView from './abstract';
+import {formatMonthDate} from '../utils';
 import {MAX_CITIES_DISPLAY, TEXT_DIVIDER} from '../const';
 
 const getTripCitiesName = (events) => {
@@ -50,25 +51,14 @@ const createTripInfoTemplate = (events) => {
   );
 };
 
-export default class TripInfo {
+export default class TripInfo extends AbstractView {
   constructor(events) {
+    super();
+
     this._events = events;
-    this._element = null;
   }
 
   getTemplate() {
     return createTripInfoTemplate(this._events);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
