@@ -1,9 +1,9 @@
-import SortView from './view/sort';
-import TripListView from './view/trip-list';
-import TripDayView from './view/trip-item';
-import TripEventView from './view/trip-event';
-import TripFormView from './view/trip-form';
-import NoEventView from './view/no-event';
+import SortView from '../view/sort';
+import TripListView from '../view/trip-list';
+import TripDayView from '../view/trip-item';
+import TripEventView from '../view/trip-event';
+import TripFormView from '../view/trip-form';
+import NoEventView from '../view/no-event';
 import {render, replace} from '../utils/render';
 import {getTripDays, filterEventsByDay} from '../utils/trip';
 import {RenderPosition, KeyCode} from '../const';
@@ -32,10 +32,7 @@ export default class Timeline {
     render(this._timelineContainer, this._sortComponent, RenderPosition.BEFOREEND);
   }
 
-  _renderEvent(event, container) {
-    const eventComponent = new TripEventView(event);
-    const eventEditComonent = new TripFormView(event);
-
+  _addEventHandlers(eventComponent, eventEditComonent) {
     const replacePointToForm = () => {
       replace(eventEditComonent, eventComponent);
     };
@@ -66,6 +63,13 @@ export default class Timeline {
       replaceFormToPoint();
       document.removeEventListener(`keydown`, onEscKeyDown);
     });
+  }
+
+  _renderEvent(event, container) {
+    const eventComponent = new TripEventView(event);
+    const eventEditComonent = new TripFormView(event);
+
+    this._addEventHandlers(eventComponent, eventEditComonent);
 
     render(container, eventComponent, RenderPosition.BEFOREEND);
   }
