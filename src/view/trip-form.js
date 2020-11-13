@@ -1,5 +1,5 @@
 import AbstractView from './abstract';
-import {formatEventType, formatDateTime} from '../utils';
+import {formatEventType, formatDateTime} from '../utils/trip';
 
 const createOfferItemTemplate = (offer) => {
   const {name, label, price, isChecked} = offer;

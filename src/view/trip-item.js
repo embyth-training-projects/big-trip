@@ -1,5 +1,5 @@
 import AbstractView from './abstract';
-import {formatMonthDate} from '../utils';
+import {formatMonthDate} from '../utils/trip';
 
 const createTripItemTemplate = (day, index) => {
   if (day.length) {

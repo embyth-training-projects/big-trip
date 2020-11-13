@@ -1,5 +1,5 @@
 import AbstractView from './abstract';
-import {formatEventType, formatTime} from '../utils';
+import {formatEventType, formatTime} from '../utils/trip';
 import {MAX_OFFERS_DISPLAY} from '../const';
 
 const createOfferItemTemplate = (offer) => {

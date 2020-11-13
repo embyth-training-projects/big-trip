@@ -1,5 +1,5 @@
 import AbstractView from './abstract';
-import {formatMonthDate} from '../utils';
+import {formatMonthDate} from '../utils/trip';
 import {MAX_CITIES_DISPLAY, TEXT_DIVIDER} from '../const';
 
 const getTripCitiesName = (events) => {

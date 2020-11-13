@@ -1,4 +1,4 @@
-import {getRandomInteger} from '../utils';
+import {getRandomInteger} from '../utils/common';
 
 const SENTENCES = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
