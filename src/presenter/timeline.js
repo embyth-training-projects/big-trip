@@ -23,7 +23,6 @@ export default class Timeline {
     this._timelineEvents = events.slice();
 
     this._timelineComponent = new TripListView(this._timelineEvents);
-    render(this._timelineContainer, this._timelineComponent, RenderPosition.BEFOREEND);
 
     this._renderTimeline();
   }
@@ -86,6 +85,10 @@ export default class Timeline {
     });
   }
 
+  _renderEventsList() {
+    render(this._timelineContainer, this._timelineComponent, RenderPosition.BEFOREEND);
+  }
+
   _renderNoEvents() {
     render(this._timelineContainer, this._noEventsComponent, RenderPosition.BEFOREEND);
   }
@@ -97,6 +100,7 @@ export default class Timeline {
     }
 
     this._renderSort();
+    this._renderEventsList();
     this._renderEvents();
   }
 }
