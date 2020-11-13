@@ -2,6 +2,15 @@ import AbstractView from './abstract';
 import {formatMonthDate} from '../utils/trip';
 
 const createTripItemTemplate = (day, index) => {
+  if (day === undefined) {
+    return (
+      `<li class="trip-days__item day">
+        <div class="day__info"></div>
+        <ul class="trip-events__list"></ul>
+      </li>`
+    );
+  }
+
   if (day.length) {
     const formattedDate = formatMonthDate(new Date(day));
 
@@ -32,7 +41,11 @@ export default class TripDay extends AbstractView {
     return createTripItemTemplate(this._day, this._index);
   }
 
-  getContainerByDay(day) {
-    return this.getElement().querySelector(`.trip-events__list[data-day="${day}"]`);
+  getContainer(day) {
+    if (day) {
+      return this.getElement().querySelector(`.trip-events__list[data-day="${day}"]`);
+    }
+
+    return this.getElement().querySelector(`.trip-events__list`);
   }
 }
