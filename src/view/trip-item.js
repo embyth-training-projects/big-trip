@@ -31,4 +31,8 @@ export default class TripDay extends AbstractView {
   getTemplate() {
     return createTripItemTemplate(this._day, this._index);
   }
+
+  getContainerByDay(day) {
+    return this.getElement().querySelector(`.trip-events__list[data-day="${day}"]`);
+  }
 }

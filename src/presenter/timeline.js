@@ -4,8 +4,9 @@ import TripDayView from './view/trip-item';
 import TripEventView from './view/trip-event';
 import TripFormView from './view/trip-form';
 import NoEventView from './view/no-event';
-import {render} from '../utils/render';
-import {RenderPosition} from '../const';
+import {render, replace} from '../utils/render';
+import {getTripDays, filterEventsByDay} from '../utils/trip';
+import {RenderPosition, KeyCode} from '../const';
 
 export default class Timeline {
   constructor(timelineContainer) {
@@ -31,12 +32,54 @@ export default class Timeline {
     render(this._timelineContainer, this._sortComponent, RenderPosition.BEFOREEND);
   }
 
-  _renderEvent() {
+  _renderEvent(event, container) {
+    const eventComponent = new TripEventView(event);
+    const eventEditComonent = new TripFormView(event);
 
+    const replacePointToForm = () => {
+      replace(eventEditComonent, eventComponent);
+    };
+
+    const replaceFormToPoint = () => {
+      replace(eventComponent, eventEditComonent);
+    };
+
+    const onEscKeyDown = (evt) => {
+      if (evt.keyCode === KeyCode.ESC || evt.key === `Esc` || evt.code === `Escape`) {
+        evt.preventDefault();
+        replaceFormToPoint();
+        document.removeEventListener(`keydown`, onEscKeyDown);
+      }
+    };
+
+    eventComponent.setEditClickHandler(() => {
+      replacePointToForm();
+      document.addEventListener(`keydown`, onEscKeyDown);
+    });
+
+    eventEditComonent.setFormSubmitHandler(() => {
+      replaceFormToPoint();
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    });
+
+    eventEditComonent.setFormResetHandler(() => {
+      replaceFormToPoint();
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    });
+
+    render(container, eventComponent, RenderPosition.BEFOREEND);
   }
 
   _renderEvents() {
+    getTripDays(this._timelineEvents).forEach((day, index) => {
+      const tripDayComponent = new TripDayView(day, index + 1);
+      render(this._timelineComponent, tripDayComponent, RenderPosition.BEFOREEND);
+      const filteredEventsByDay = filterEventsByDay(this._timelineEvents, day);
 
+      filteredEventsByDay.forEach((event) => {
+        this._renderEvent(event, tripDayComponent.getContainerByDay(day));
+      });
+    });
   }
 
   _renderNoEvents() {
