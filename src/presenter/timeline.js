@@ -28,7 +28,7 @@ export default class Timeline {
   }
 
   _renderSort() {
-
+    render(this._timelineContainer, this._sortComponent, RenderPosition.BEFOREEND);
   }
 
   _renderEvent() {
@@ -40,7 +40,7 @@ export default class Timeline {
   }
 
   _renderNoEvents() {
-
+    render(this._timelineContainer, this._noEventsComponent, RenderPosition.BEFOREEND);
   }
 
   _renderTimeline() {
