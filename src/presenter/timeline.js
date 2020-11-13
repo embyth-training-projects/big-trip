@@ -6,11 +6,13 @@ import TripFormView from '../view/trip-form';
 import NoEventView from '../view/no-event';
 import {render, replace} from '../utils/render';
 import {getTripDays, filterEventsByDay} from '../utils/trip';
-import {RenderPosition, KeyCode} from '../const';
+import {RenderPosition, KeyCode, SortType} from '../const';
 
 export default class Timeline {
   constructor(timelineContainer) {
     this._timelineContainer = timelineContainer;
+
+    this._currentSortType = SortType.DEFAULT;
 
     this._timelineEvents = null;
     this._timelineComponent = null;
@@ -23,14 +25,36 @@ export default class Timeline {
 
   init(events) {
     this._timelineEvents = events.slice();
+    this._sourcedEvents = events.slice();
 
     this._timelineComponent = new TripListView(this._timelineEvents);
 
     this._renderTimeline();
   }
 
-  _handleSortTypeChange(sortType) {
+  _sortEvents(sortType) {
+    switch (sortType) {
+      case SortType.TIME:
 
+        break;
+      case SortType.PRICE:
+
+        break;
+      default:
+        this._timelineEvents = this._sourcedEvents.slice();
+    }
+
+    this._currentSortType = sortType;
+  }
+
+  _handleSortTypeChange(sortType) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    this._sortEvents(sortType);
+    // Очищаем ленту
+    // Рендерим отсортированную ленту
   }
 
   _renderSort() {
