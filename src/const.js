@@ -17,3 +17,9 @@ export const RenderPosition = {
 export const KeyCode = {
   ESC: 27
 };
+
+export const SortType = {
+  DEFAULT: `event`,
+  TIME: `time`,
+  PRICE: `price`,
+};
