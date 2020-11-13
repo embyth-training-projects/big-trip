@@ -196,9 +196,32 @@ export default class TripForm extends AbstractView {
     super();
 
     this._event = event;
+
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._formResetHandler = this._formResetHandler.bind(this);
   }
 
   getTemplate() {
     return createTripFormTemplate(this._event);
+  }
+
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.formSubmit();
+  }
+
+  _formResetHandler(evt) {
+    evt.preventDefault();
+    this._callback.formReset();
+  }
+
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  setFormResetHandler(callback) {
+    this._callback.formReset = callback;
+    this.getElement().addEventListener(`reset`, this._formResetHandler);
   }
 }

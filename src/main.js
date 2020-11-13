@@ -44,18 +44,17 @@ const addEventsActions = (eventContainer, eventComponent, eventEditComonent) => 
     }
   };
 
-  eventComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
+  eventComponent.setEditClickHandler(() => {
     replacePointToForm();
     document.addEventListener(`keydown`, onEscKeyDown);
   });
 
-  eventEditComonent.getElement().addEventListener(`submit`, (evt) => {
-    evt.preventDefault();
+  eventEditComonent.setFormSubmitHandler(() => {
     replaceFormToPoint();
     document.removeEventListener(`keydown`, onEscKeyDown);
   });
 
-  eventEditComonent.getElement().addEventListener(`reset`, () => {
+  eventEditComonent.setFormResetHandler(() => {
     replaceFormToPoint();
     document.removeEventListener(`keydown`, onEscKeyDown);
   });
