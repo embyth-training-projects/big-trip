@@ -1,4 +1,4 @@
-import AbstractView from './abstract';
+import SmartView from './smart';
 import {formatEventType, formatDateTime} from '../utils/trip';
 import {capitalizeFirstLetter} from '../utils/common';
 import {generateDescription, generatePhotos, generateOffers} from '../mock/trip';
@@ -184,7 +184,7 @@ const createTripFormTemplate = (event) => {
   );
 };
 
-export default class TripForm extends AbstractView {
+export default class TripForm extends SmartView {
   constructor(event) {
     super();
 
@@ -205,37 +205,6 @@ export default class TripForm extends AbstractView {
 
   getTemplate() {
     return createTripFormTemplate(this._data);
-  }
-
-  updateData(update, justDataUpdate) {
-    if (!update) {
-      return;
-    }
-
-    this._data = Object.assign(
-        {},
-        this._data,
-        update
-    );
-
-    if (justDataUpdate) {
-      return;
-    }
-
-    this.updateElement();
-  }
-
-  updateElement() {
-    let prevElement = this.getElement();
-    const parent = prevElement.parentElement;
-    this.removeElement();
-
-    const newElement = this.getElement();
-
-    parent.replaceChild(newElement, prevElement);
-    prevElement = null;
-
-    this.restoreHandlers();
   }
 
   restoreHandlers() {
