@@ -97,6 +97,8 @@ const generateDate = () => {
   return currentDate;
 };
 
+const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+
 export const generateTrip = () => {
   const type = generateType();
 
@@ -112,7 +114,7 @@ export const generateTrip = () => {
     },
     price: generatePrice(),
     dateRange: [generateDate(), generateDate()].sort((a, b) => a.getTime() - b.getTime()),
-    id: null,
+    id: generateId(),
     isFavorite: Boolean(getRandomInteger()),
   };
 };

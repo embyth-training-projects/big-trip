@@ -16,6 +16,8 @@ export default class Timeline {
     this._timelineEvents = null;
     this._timelineComponent = null;
 
+    this._eventPresenter = {};
+
     this._sortComponent = new SortView();
     this._noEventsComponent = new NoEventView();
 
@@ -65,6 +67,7 @@ export default class Timeline {
   _renderEvent(event, container) {
     const eventPresenter = new EventPresenter(container);
     eventPresenter.init(event);
+    this._eventPresenter[event.id] = eventPresenter;
   }
 
   _renderEvents() {
@@ -99,6 +102,11 @@ export default class Timeline {
   _clearTimeline() {
     remove(this._sortComponent);
     remove(this._timelineComponent);
+    Object
+      .values(this._eventPresenter)
+      .forEach((presenter) => presenter.destroy());
+    console.log(this._eventPresenter);
+    this._eventPresenter = {};
   }
 
   _renderTimeline() {
