@@ -14,6 +14,8 @@ export default class Event {
     this._handleEditClick = this._handleEditClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleFormReset = this._handleFormReset.bind(this);
+    this._handleFormClose = this._handleFormClose.bind(this);
+    this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
   init(event) {
@@ -28,6 +30,7 @@ export default class Event {
     this._eventComponent.setEditClickHandler(this._handleEditClick);
     this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._eventEditComponent.setFormResetHandler(this._handleFormReset);
+    this._eventEditComponent.setFormCloseClickHandler(this._handleFormClose);
 
     if (prevEventComponent === null || prevEventEditComponent === null) {
       render(this._eventContainer, this._eventComponent, RenderPosition.BEFOREEND);
@@ -53,33 +56,37 @@ export default class Event {
 
   _replacePointToForm() {
     replace(this._eventEditComponent, this._eventComponent);
+    document.addEventListener(`keydown`, this._onEscKeyDown);
   }
 
   _replaceFormToPoint() {
     replace(this._eventComponent, this._eventEditComponent);
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
   }
 
   _onEscKeyDown(evt) {
     if (evt.keyCode === KeyCode.ESC || evt.key === `Esc` || evt.code === `Escape`) {
       evt.preventDefault();
+      this._eventEditComponent.reset(this._event);
       this._replaceFormToPoint();
-      document.removeEventListener(`keydown`, this._onEscKeyDown);
     }
   }
 
   _handleEditClick() {
     this._replacePointToForm();
-    document.addEventListener(`keydown`, this._onEscKeyDown);
   }
 
   _handleFormSubmit(event) {
     this._changeData(event);
     this._replaceFormToPoint();
-    document.removeEventListener(`keydown`, this._onEscKeyDown);
   }
 
   _handleFormReset() {
     this._replaceFormToPoint();
-    document.removeEventListener(`keydown`, this._onEscKeyDown);
+  }
+
+  _handleFormClose() {
+    this._eventEditComponent.reset(this._event);
+    this._replaceFormToPoint();
   }
 }

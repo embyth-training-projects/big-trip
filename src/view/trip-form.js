@@ -199,8 +199,15 @@ export default class TripForm extends SmartView {
     this._offerChangeHandler = this._offerChangeHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formResetHandler = this._formResetHandler.bind(this);
+    this._formCloseHandler = this._formCloseHandler.bind(this);
 
     this._setInnerHandlers();
+  }
+
+  reset(event) {
+    this.updateData(
+        TripForm.parseEventToData(event)
+    );
   }
 
   getTemplate() {
@@ -211,6 +218,7 @@ export default class TripForm extends SmartView {
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormResetHandler(this._callback.formReset);
+    this.setFormCloseClickHandler(this._callback.formClose);
   }
 
   _setInnerHandlers() {
@@ -313,6 +321,18 @@ export default class TripForm extends SmartView {
     }, true);
   }
 
+  _offerChangeHandler(evt) {
+    evt.preventDefault();
+
+    const type = Object.assign({}, this._data.type);
+    const index = type.offers.findIndex((offer) => offer.name === evt.target.value);
+    type.offers[index].isChecked = !type.offers[index].isChecked;
+
+    this.updateData({
+      type
+    }, true);
+  }
+
   _formSubmitHandler(evt) {
     evt.preventDefault();
     this._callback.formSubmit(TripForm.parseDataToEvent(this._data));
@@ -323,16 +343,9 @@ export default class TripForm extends SmartView {
     this._callback.formReset();
   }
 
-  _offerChangeHandler(evt) {
+  _formCloseHandler(evt) {
     evt.preventDefault();
-
-    const type = this._data.type;
-    const index = type.offers.findIndex((offer) => offer.name === evt.target.value);
-    type.offers[index].isChecked = !type.offers[index].isChecked;
-
-    this.updateData({
-      type
-    }, true);
+    this._callback.formClose();
   }
 
   setFormSubmitHandler(callback) {
@@ -343,6 +356,13 @@ export default class TripForm extends SmartView {
   setFormResetHandler(callback) {
     this._callback.formReset = callback;
     this.getElement().addEventListener(`reset`, this._formResetHandler);
+  }
+
+  setFormCloseClickHandler(callback) {
+    this._callback.formClose = callback;
+    this.getElement()
+      .querySelector(`.event__rollup-btn`)
+      .addEventListener(`click`, this._formCloseHandler);
   }
 
   static parseEventToData(event) {
