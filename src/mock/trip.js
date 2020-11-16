@@ -1,4 +1,5 @@
 import {getRandomInteger} from '../utils/common';
+import {DESTINATIONS, EVENT_TYPE} from '../const';
 
 const SENTENCES = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
@@ -14,7 +15,7 @@ const SENTENCES = [
   `In rutrum ac purus sit amet tempus.`,
 ];
 
-const generateDescription = () => {
+export const generateDescription = () => {
   const MAX_DESCRIPTION_SENTENCES = 5;
 
   const randomLength = getRandomInteger(0, MAX_DESCRIPTION_SENTENCES);
@@ -28,18 +29,17 @@ const generateDescription = () => {
 };
 
 const generateType = () => {
-  const tripTypes = [`taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`, `check-in`, `sightseeing`, `restaurant`];
+  const tripTypes = [...EVENT_TYPE.TRANSFER, ...EVENT_TYPE.ACTIVITY];
   const randomIndex = getRandomInteger(1, tripTypes.length - 1);
   return tripTypes[randomIndex];
 };
 
 const generateCity = () => {
-  const cities = [`Amsterdam`, `Geneva`, `Chamonix`, `Saint Petersburg`, `Berlin`, `Paris`, `Monaco`, `London`];
-  const randomIndex = getRandomInteger(1, cities.length - 1);
-  return cities[randomIndex];
+  const randomIndex = getRandomInteger(1, DESTINATIONS.length - 1);
+  return DESTINATIONS[randomIndex];
 };
 
-const generateOffers = (type) => {
+export const generateOffers = (type) => {
   const offers = [
     {name: `seats`, label: `Choose seats`, price: 5, isChecked: Boolean(getRandomInteger(0, 1)), types: [`flight`, `train`]},
     {name: `meal`, label: `Add meal`, price: 15, isChecked: Boolean(getRandomInteger(0, 1)), types: [`flight`, `train`, `ship`]},
@@ -56,7 +56,7 @@ const generateOffers = (type) => {
   return offers.filter((offer) => offer.types.includes(type));
 };
 
-const generatePhotos = () => {
+export const generatePhotos = () => {
   const MAX_PHOTOS_COUNT = 5;
 
   const randomLength = getRandomInteger(0, MAX_PHOTOS_COUNT);

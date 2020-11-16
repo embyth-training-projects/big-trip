@@ -6,6 +6,17 @@ export const MAX_CITIES_DISPLAY = 3;
 
 export const TEXT_DIVIDER = `&nbsp;&mdash;&nbsp;`;
 
+export const DESTINATIONS = [`Amsterdam`, `Geneva`, `Chamonix`, `Saint Petersburg`, `Berlin`, `Paris`, `Monaco`, `London`];
+
+export const EVENT_TYPE = {
+  TRANSFER: [`taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`],
+  ACTIVITY: [`sightseeing`, `restaurant`, `check-in`],
+  NAMES: {
+    TRANSFER: `Transfer`,
+    ACTIVITY: `Activity`
+  }
+};
+
 export const setWithInPretext = new Set([`sightseeing`, `restaurant`, `check-in`]);
 
 export const RenderPosition = {
