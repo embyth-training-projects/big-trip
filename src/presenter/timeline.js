@@ -79,6 +79,7 @@ export default class Timeline {
   }
 
   _renderEvents() {
+    // Если сортировка по умолчанию (Event) отрисовываем список с датами
     if (this._currentSortType === SortType.DEFAULT) {
       getTripDays(this._timelineEvents).forEach((day, index) => {
         const tripDayComponent = new TripDayView(day, index + 1);
@@ -90,13 +91,13 @@ export default class Timeline {
           this._renderEvent(event, tripDayComponent.getContainer(day));
         });
       });
+    } else { // В противном случаем список отрисовывается без дат
+      const tripDayComponent = new TripDayView();
+      this._timelineEvents.forEach((event) => {
+        render(this._timelineComponent, tripDayComponent, RenderPosition.BEFOREEND);
+        this._renderEvent(event, tripDayComponent.getContainer());
+      });
     }
-
-    const tripDayComponent = new TripDayView();
-    this._timelineEvents.forEach((event) => {
-      render(this._timelineComponent, tripDayComponent, RenderPosition.BEFOREEND);
-      this._renderEvent(event, tripDayComponent.getContainer());
-    });
   }
 
   _renderEventsList() {
