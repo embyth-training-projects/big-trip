@@ -2,10 +2,11 @@ import SmartView from './smart';
 import {formatEventType, formatDateTime} from '../utils/trip';
 import {capitalizeFirstLetter} from '../utils/common';
 import {generateDescription, generatePhotos, generateOffers} from '../mock/trip';
-import {DESTINATIONS, EVENT_TYPE} from '../const';
+import {DESTINATIONS, EVENT_TYPE, DateType} from '../const';
 import flatpickr from 'flatpickr';
 
-import '../../node_modules/flatpickr/dist/flatpickr.min';
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
+import '../../node_modules/flatpickr/dist/themes/material_blue.css';
 
 const createOfferItemTemplate = (offer, id) => {
   const {name, label, price, isChecked} = offer;
@@ -192,11 +193,13 @@ export default class TripForm extends SmartView {
     super();
 
     this._data = TripForm.parseEventToData(event);
+    this._startDatepicker = null;
+    this._endDatepicker = null;
 
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
-    this._timeInChangeHandler = this._timeInChangeHandler.bind(this);
-    this._timeOutChangeHandler = this._timeOutChangeHandler.bind(this);
+    this._timeStartChangeHandler = this._timeStartChangeHandler.bind(this);
+    this._timeEndChangeHandler = this._timeEndChangeHandler.bind(this);
     this._priceInputHandler = this._priceInputHandler.bind(this);
     this._favoriteChangeHandler = this._favoriteChangeHandler.bind(this);
     this._offerChangeHandler = this._offerChangeHandler.bind(this);
@@ -224,7 +227,44 @@ export default class TripForm extends SmartView {
     this.setFormCloseClickHandler(this._callback.formClose);
   }
 
+  _setDatepickers() {
+    const timeStartInput = this.getElement().querySelector(`#event-start-time-${this._data.id}`);
+    const timeEndInput = this.getElement().querySelector(`#event-end-time-${this._data.id}`);
+
+    this._destroyDatepickers();
+    this._startDatepicker = this._getDatepicker(timeStartInput, DateType.START);
+    this._endDatepicker = this._getDatepicker(timeEndInput, DateType.END);
+  }
+
+  _destroyDatepickers() {
+    if (this._startDatepicker) {
+      this._startDatepicker.destroy();
+      this._startDatepicker = null;
+    }
+
+    if (this._endDatepicker) {
+      this._endDatepicker.destroy();
+      this._endDatepicker = null;
+    }
+  }
+
+  _getDatepicker(element, dateType) {
+    return flatpickr(
+        element,
+        {
+          dateFormat: `d/m/y H:i`,
+          enableTime: true,
+          [`time_24hr`]: true,
+          defaultDate: dateType === DateType.START ? this._data.dateRange[0] : this._data.dateRange[1],
+          minDate: dateType === DateType.END ? this._data.dateRange[0] : ``,
+          onChange: dateType === DateType.START ? this._timeStartChangeHandler : this._timeEndChangeHandler,
+        }
+    );
+  }
+
   _setInnerHandlers() {
+    this._setDatepickers();
+
     this.getElement()
       .querySelectorAll(`.event__type-input`)
       .forEach((item) => item.addEventListener(`change`, this._typeChangeHandler));
@@ -232,14 +272,6 @@ export default class TripForm extends SmartView {
     this.getElement()
       .querySelector(`#event-destination-${this._data.id}`)
       .addEventListener(`change`, this._destinationChangeHandler);
-
-    this.getElement()
-      .querySelector(`#event-start-time-${this._data.id}`)
-      .addEventListener(`change`, this._timeInChangeHandler);
-
-    this.getElement()
-      .querySelector(`#event-end-time-${this._data.id}`)
-      .addEventListener(`change`, this._timeOutChangeHandler);
 
     this.getElement()
       .querySelector(`#event-price-${this._data.id}`)
@@ -301,12 +333,16 @@ export default class TripForm extends SmartView {
     }
   }
 
-  _timeInChangeHandler() {
-    // Обработчик выбора даты начала
+  _timeStartChangeHandler([userDate]) {
+    this.updateData({
+      dateRange: [userDate, this._data.dateRange[1]]
+    });
   }
 
-  _timeOutChangeHandler() {
-    // Обработчик выбора даты конца
+  _timeEndChangeHandler([userDate]) {
+    this.updateData({
+      dateRange: [this._data.dateRange[0], userDate]
+    });
   }
 
   _priceInputHandler(evt) {

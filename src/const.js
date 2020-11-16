@@ -39,3 +39,8 @@ export const Mode = {
   DEFAULT: `DEFAULT`,
   EDITING: `EDITING`,
 };
+
+export const DateType = {
+  START: `START`,
+  END: `END`,
+};
