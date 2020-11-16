@@ -1,15 +1,17 @@
 import TripEventView from '../view/trip-event';
 import TripFormView from '../view/trip-form';
 import {render, replace, remove} from '../utils/render';
-import {RenderPosition, KeyCode} from '../const';
+import {RenderPosition, KeyCode, Mode} from '../const';
 
 export default class Event {
-  constructor(eventContainer, changeData) {
+  constructor(eventContainer, changeData, changeMode) {
     this._eventContainer = eventContainer;
     this._changeData = changeData;
+    this._changeMode = changeMode;
 
     this._eventComponent = null;
     this._eventEditComponent = null;
+    this._mode = Mode.DEFAULT;
 
     this._handleEditClick = this._handleEditClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
@@ -37,16 +39,22 @@ export default class Event {
       return;
     }
 
-    if (this._eventContainer.contains(prevEventComponent.getElement())) {
+    if (this._mode === Mode.DEFAULT) {
       replace(this._eventComponent, prevEventComponent);
     }
 
-    if (this._eventContainer.contains(prevEventEditComponent.getElement())) {
+    if (this._mode === Mode.EDITING) {
       replace(this._eventEditComponent, prevEventEditComponent);
     }
 
     remove(prevEventComponent);
     remove(prevEventEditComponent);
+  }
+
+  resetView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._replaceFormToPoint();
+    }
   }
 
   destroy() {
@@ -57,11 +65,14 @@ export default class Event {
   _replacePointToForm() {
     replace(this._eventEditComponent, this._eventComponent);
     document.addEventListener(`keydown`, this._onEscKeyDown);
+    this._changeMode();
+    this._mode = Mode.EDITING;
   }
 
   _replaceFormToPoint() {
     replace(this._eventComponent, this._eventEditComponent);
     document.removeEventListener(`keydown`, this._onEscKeyDown);
+    this._mode = Mode.DEFAULT;
   }
 
   _onEscKeyDown(evt) {

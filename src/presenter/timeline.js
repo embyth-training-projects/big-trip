@@ -22,6 +22,7 @@ export default class Timeline {
     this._sortComponent = new SortView();
     this._noEventsComponent = new NoEventView();
 
+    this._handleModeChange = this._handleModeChange.bind(this);
     this._handleEventChange = this._handleEventChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
@@ -33,6 +34,12 @@ export default class Timeline {
     this._timelineComponent = new TripListView(this._timelineEvents);
 
     this._renderTimeline();
+  }
+
+  _handleModeChange() {
+    Object
+      .values(this._eventPresenter)
+      .forEach((presenter) => presenter.resetView());
   }
 
   _handleEventChange(updatedEvent) {
@@ -73,7 +80,7 @@ export default class Timeline {
   }
 
   _renderEvent(event, container) {
-    const eventPresenter = new EventPresenter(container, this._handleEventChange);
+    const eventPresenter = new EventPresenter(container, this._handleEventChange, this._handleModeChange);
     eventPresenter.init(event);
     this._eventPresenter[event.id] = eventPresenter;
   }
