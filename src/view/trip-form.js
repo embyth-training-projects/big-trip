@@ -199,25 +199,7 @@ export default class TripForm extends AbstractView {
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formResetHandler = this._formResetHandler.bind(this);
 
-    this.getElement()
-      .querySelectorAll(`.event__type-input`)
-      .forEach((item) => item.addEventListener(`change`, this._typeChangeHandler));
-
-    this.getElement()
-      .querySelector(`#event-destination-${this._data.id}`)
-      .addEventListener(`change`, this._destinationChangeHandler);
-
-    this.getElement()
-      .querySelector(`#event-start-time-${this._data.id}`)
-      .addEventListener(`change`, this._timeInChangeHandler);
-
-    this.getElement()
-      .querySelector(`#event-end-time-${this._data.id}`)
-      .addEventListener(`change`, this._timeOutChangeHandler);
-
-    this.getElement()
-      .querySelector(`#event-price-${this._data.id}`)
-      .addEventListener(`input`, this._priceInputHandler);
+    this._setInnerHandlers();
   }
 
   getTemplate() {
@@ -247,6 +229,37 @@ export default class TripForm extends AbstractView {
 
     parent.replaceChild(newElement, prevElement);
     prevElement = null;
+
+    this.restoreHandlers();
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setFavoriteClickHandler(this._callback.favoriteClick);
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setFormResetHandler(this._callback.formReset);
+  }
+
+  _setInnerHandlers() {
+    this.getElement()
+      .querySelectorAll(`.event__type-input`)
+      .forEach((item) => item.addEventListener(`change`, this._typeChangeHandler));
+
+    this.getElement()
+      .querySelector(`#event-destination-${this._data.id}`)
+      .addEventListener(`change`, this._destinationChangeHandler);
+
+    this.getElement()
+      .querySelector(`#event-start-time-${this._data.id}`)
+      .addEventListener(`change`, this._timeInChangeHandler);
+
+    this.getElement()
+      .querySelector(`#event-end-time-${this._data.id}`)
+      .addEventListener(`change`, this._timeOutChangeHandler);
+
+    this.getElement()
+      .querySelector(`#event-price-${this._data.id}`)
+      .addEventListener(`input`, this._priceInputHandler);
   }
 
   _checkDestinationValidation(evt) {
