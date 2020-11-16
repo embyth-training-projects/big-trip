@@ -202,12 +202,11 @@ const createTripFormTemplate = (event) => {
   );
 };
 
-
 export default class TripForm extends AbstractView {
   constructor(event) {
     super();
 
-    this._event = event;
+    this._data = TripForm.parseEventToData(event);
 
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
@@ -215,7 +214,7 @@ export default class TripForm extends AbstractView {
   }
 
   getTemplate() {
-    return createTripFormTemplate(this._event);
+    return createTripFormTemplate(this._data);
   }
 
   updateData(update) {
@@ -250,7 +249,7 @@ export default class TripForm extends AbstractView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(this._event);
+    this._callback.formSubmit(TripForm.parseDataToEvent(this._data));
   }
 
   _formResetHandler(evt) {
@@ -271,5 +270,13 @@ export default class TripForm extends AbstractView {
   setFormResetHandler(callback) {
     this._callback.formReset = callback;
     this.getElement().addEventListener(`reset`, this._formResetHandler);
+  }
+
+  static parseEventToData(event) {
+    return Object.assign({}, event);
+  }
+
+  static parseDataToEvent(data) {
+    return Object.assign({}, data);
   }
 }
