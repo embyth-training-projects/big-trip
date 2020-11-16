@@ -3,6 +3,9 @@ import {formatEventType, formatDateTime} from '../utils/trip';
 import {capitalizeFirstLetter} from '../utils/common';
 import {generateDescription, generatePhotos, generateOffers} from '../mock/trip';
 import {DESTINATIONS, EVENT_TYPE} from '../const';
+import flatpickr from 'flatpickr';
+
+import '../../node_modules/flatpickr/dist/flatpickr.min';
 
 const createOfferItemTemplate = (offer, id) => {
   const {name, label, price, isChecked} = offer;
