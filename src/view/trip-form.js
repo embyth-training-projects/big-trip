@@ -206,7 +206,7 @@ export default class TripForm extends AbstractView {
     return createTripFormTemplate(this._data);
   }
 
-  updateData(update) {
+  updateData(update, justDataUpdate) {
     if (!update) {
       return;
     }
@@ -216,6 +216,10 @@ export default class TripForm extends AbstractView {
         this._data,
         update
     );
+
+    if (justDataUpdate) {
+      return;
+    }
 
     this.updateElement();
   }
@@ -266,7 +270,7 @@ export default class TripForm extends AbstractView {
     let isValid = false;
     const isDataCorrect = DESTINATIONS.includes(evt.target.value);
 
-    if (evt.target.validity.valueMissing) {
+    if (evt.target.validity.valueMissing || evt.target.value === ``) {
       evt.target.setCustomValidity(`Select value from the list below, please!`);
     } else if (!isDataCorrect) {
       evt.target.setCustomValidity(`Can't find your destination, try to select value from hints below, please!`);
@@ -280,16 +284,18 @@ export default class TripForm extends AbstractView {
 
   _typeChangeHandler(evt) {
     evt.preventDefault();
+
+    const value = evt.target.value;
     this.updateData({
       type: {
-        name: evt.target.value,
-        offers: generateOffers()
+        name: value,
+        offers: generateOffers(value)
       }
     });
-
   }
 
   _destinationChangeHandler(evt) {
+    evt.preventDefault();
     if (evt.target.value === this._data.city.name) {
       return;
     }
@@ -315,8 +321,11 @@ export default class TripForm extends AbstractView {
     // Обработчик выбора даты конца
   }
 
-  _priceInputHandler() {
-    // Обработчик ввода стоимости
+  _priceInputHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      price: evt.target.value
+    }, true);
   }
 
   _favoriteClickHandler(evt) {
