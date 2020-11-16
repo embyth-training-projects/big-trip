@@ -1,12 +1,11 @@
 import SortView from '../view/sort';
 import TripListView from '../view/trip-list';
 import TripDayView from '../view/trip-item';
-import TripEventView from '../view/trip-event';
-import TripFormView from '../view/trip-form';
+import EventPresenter from './event';
 import NoEventView from '../view/no-event';
-import {render, replace, remove} from '../utils/render';
+import {render, remove} from '../utils/render';
 import {getTripDays, filterEventsByDay, sortEventsByTime, sortEventsByPrice} from '../utils/trip';
-import {RenderPosition, KeyCode, SortType} from '../const';
+import {RenderPosition, SortType} from '../const';
 
 export default class Timeline {
   constructor(timelineContainer) {
@@ -63,46 +62,9 @@ export default class Timeline {
     render(this._timelineContainer, this._sortComponent, RenderPosition.BEFOREEND);
   }
 
-  _addEventHandlers(eventComponent, eventEditComonent) {
-    const replacePointToForm = () => {
-      replace(eventEditComonent, eventComponent);
-    };
-
-    const replaceFormToPoint = () => {
-      replace(eventComponent, eventEditComonent);
-    };
-
-    const onEscKeyDown = (evt) => {
-      if (evt.keyCode === KeyCode.ESC || evt.key === `Esc` || evt.code === `Escape`) {
-        evt.preventDefault();
-        replaceFormToPoint();
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      }
-    };
-
-    eventComponent.setEditClickHandler(() => {
-      replacePointToForm();
-      document.addEventListener(`keydown`, onEscKeyDown);
-    });
-
-    eventEditComonent.setFormSubmitHandler(() => {
-      replaceFormToPoint();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    });
-
-    eventEditComonent.setFormResetHandler(() => {
-      replaceFormToPoint();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    });
-  }
-
   _renderEvent(event, container) {
-    const eventComponent = new TripEventView(event);
-    const eventEditComonent = new TripFormView(event);
-
-    this._addEventHandlers(eventComponent, eventEditComonent);
-
-    render(container, eventComponent, RenderPosition.BEFOREEND);
+    const eventPresenter = new EventPresenter(container);
+    eventPresenter.init(event);
   }
 
   _renderEvents() {
