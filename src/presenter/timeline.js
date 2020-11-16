@@ -3,6 +3,7 @@ import TripListView from '../view/trip-list';
 import TripDayView from '../view/trip-item';
 import EventPresenter from './event';
 import NoEventView from '../view/no-event';
+import {updateItem} from '../utils/common';
 import {render, remove} from '../utils/render';
 import {getTripDays, filterEventsByDay, sortEventsByTime, sortEventsByPrice} from '../utils/trip';
 import {RenderPosition, SortType} from '../const';
@@ -21,6 +22,7 @@ export default class Timeline {
     this._sortComponent = new SortView();
     this._noEventsComponent = new NoEventView();
 
+    this._handleEventChange = this._handleEventChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
@@ -31,6 +33,12 @@ export default class Timeline {
     this._timelineComponent = new TripListView(this._timelineEvents);
 
     this._renderTimeline();
+  }
+
+  _handleEventChange(updatedEvent) {
+    this._timelineEvents = updateItem(this._timelineEvents, updatedEvent);
+    this._sourcedEvents = updateItem(this._sourcedEvents, updatedEvent);
+    this._eventPresenter[updatedEvent.id].init(updatedEvent);
   }
 
   _sortEvents(sortType) {
@@ -105,7 +113,6 @@ export default class Timeline {
     Object
       .values(this._eventPresenter)
       .forEach((presenter) => presenter.destroy());
-    console.log(this._eventPresenter);
     this._eventPresenter = {};
   }
 
