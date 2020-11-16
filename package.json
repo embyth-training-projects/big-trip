@@ -22,6 +22,7 @@
     "eslint": "7.3.1",
     "eslint-config-htmlacademy": "0.5.2",
     "gh-pages": "3.1.0",
+    "moment-locales-webpack-plugin": "1.2.0",
     "style-loader": "2.0.0",
     "webpack": "4.44.2",
     "webpack-cli": "3.3.12",
@@ -29,7 +30,8 @@
   },
   "license": "MIT",
   "dependencies": {
-    "flatpickr": "4.6.6"
+    "flatpickr": "4.6.6",
+    "moment": "2.29.1"
   },
   "engines": {
     "node": "12"
