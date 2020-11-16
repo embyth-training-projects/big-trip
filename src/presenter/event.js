@@ -4,13 +4,15 @@ import {render, replace, remove} from '../utils/render';
 import {RenderPosition, KeyCode} from '../const';
 
 export default class Event {
-  constructor(eventContainer) {
+  constructor(eventContainer, changeData) {
     this._eventContainer = eventContainer;
+    this._changeData = changeData;
 
     this._eventComponent = null;
     this._eventEditComponent = null;
 
     this._handleEditClick = this._handleEditClick.bind(this);
+    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleFormReset = this._handleFormReset.bind(this);
   }
@@ -25,6 +27,7 @@ export default class Event {
     this._eventEditComponent = new TripFormView(event);
 
     this._eventComponent.setEditClickHandler(this._handleEditClick);
+    this._eventEditComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._eventEditComponent.setFormResetHandler(this._handleFormReset);
 
@@ -71,7 +74,20 @@ export default class Event {
     document.addEventListener(`keydown`, this._onEscKeyDown);
   }
 
-  _handleFormSubmit() {
+  _handleFavoriteClick() {
+    this._changeData(
+        Object.assign(
+            {},
+            this._event,
+            {
+              isFavorite: !this._event.isFavorite
+            }
+        )
+    );
+  }
+
+  _handleFormSubmit(event) {
+    this._changeData(event);
     this._replaceFormToPoint();
     document.removeEventListener(`keydown`, this._onEscKeyDown);
   }

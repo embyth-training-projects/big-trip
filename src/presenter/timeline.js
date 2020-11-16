@@ -73,7 +73,7 @@ export default class Timeline {
   }
 
   _renderEvent(event, container) {
-    const eventPresenter = new EventPresenter(container);
+    const eventPresenter = new EventPresenter(container, this._handleEventChange);
     eventPresenter.init(event);
     this._eventPresenter[event.id] = eventPresenter;
   }
