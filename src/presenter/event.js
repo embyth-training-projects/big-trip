@@ -12,7 +12,6 @@ export default class Event {
     this._eventEditComponent = null;
 
     this._handleEditClick = this._handleEditClick.bind(this);
-    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleFormReset = this._handleFormReset.bind(this);
   }
@@ -27,7 +26,6 @@ export default class Event {
     this._eventEditComponent = new TripFormView(event);
 
     this._eventComponent.setEditClickHandler(this._handleEditClick);
-    this._eventEditComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._eventEditComponent.setFormResetHandler(this._handleFormReset);
 
@@ -72,18 +70,6 @@ export default class Event {
   _handleEditClick() {
     this._replacePointToForm();
     document.addEventListener(`keydown`, this._onEscKeyDown);
-  }
-
-  _handleFavoriteClick() {
-    this._changeData(
-        Object.assign(
-            {},
-            this._event,
-            {
-              isFavorite: !this._event.isFavorite
-            }
-        )
-    );
   }
 
   _handleFormSubmit(event) {

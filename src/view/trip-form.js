@@ -4,13 +4,13 @@ import {capitalizeFirstLetter} from '../utils/common';
 import {generateDescription, generatePhotos, generateOffers} from '../mock/trip';
 import {DESTINATIONS, EVENT_TYPE} from '../const';
 
-const createOfferItemTemplate = (offer) => {
+const createOfferItemTemplate = (offer, id) => {
   const {name, label, price, isChecked} = offer;
   const checked = isChecked ? `checked` : ``;
   return (
     `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${name}-1" type="checkbox" name="event-offer-${name}" ${checked}>
-      <label class="event__offer-label" for="event-offer-${name}-1">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${name}-${id}" type="checkbox" name="event-offer-${name}" ${checked} value="${name}">
+      <label class="event__offer-label" for="event-offer-${name}-${id}">
         <span class="event__offer-title">${label}</span>
         &plus;
         &euro;&nbsp;<span class="event__offer-price">${price}</span>
@@ -19,7 +19,7 @@ const createOfferItemTemplate = (offer) => {
   );
 };
 
-const createOffersTemplate = (offers) => {
+const createOffersTemplate = (offers, id) => {
   if (offers.length) {
     return (
       `<section class="event__section  event__section--offers">
@@ -27,7 +27,7 @@ const createOffersTemplate = (offers) => {
 
         <div class="event__available-offers">
           ${offers
-            .map(createOfferItemTemplate)
+            .map((offer) => createOfferItemTemplate(offer, id))
             .join(``)}
         </div>
       </section>`
@@ -69,7 +69,7 @@ const createDestinationsDatalistTemplate = (id) => {
   );
 };
 
-const createTypeListTemplate = (id) => {
+const createTypeListTemplate = (id, typeName) => {
   return (
     `<div class="event__type-list">
       ${Object
@@ -83,7 +83,7 @@ const createTypeListTemplate = (id) => {
                 .map((type) => {
                   return (
                     `<div class="event__type-item">
-                      <input id="event-type-${type}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
+                      <input id="event-type-${type}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${type === typeName ? `checked` : ``}>
                       <label class="event__type-label event__type-label--${type}" for="event-type-${type}-${id}">${capitalizeFirstLetter(type)}</label>
                     </div>`
                   );
@@ -107,9 +107,9 @@ const createTripFormTemplate = (event) => {
   const formattedStartTime = formatDateTime(dateRange[0]);
   const formattedEndTime = formatDateTime(dateRange[1]);
 
-  const offersTemplate = createOffersTemplate(offers);
+  const offersTemplate = createOffersTemplate(offers, id);
   const photosTemplate = createPhotosTemplate(photos);
-  const typeListTemplate = createTypeListTemplate(id);
+  const typeListTemplate = createTypeListTemplate(id, typeName);
   const destinationsDatalistTemplate = createDestinationsDatalistTemplate(id);
 
   return (
@@ -195,7 +195,8 @@ export default class TripForm extends AbstractView {
     this._timeInChangeHandler = this._timeInChangeHandler.bind(this);
     this._timeOutChangeHandler = this._timeOutChangeHandler.bind(this);
     this._priceInputHandler = this._priceInputHandler.bind(this);
-    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
+    this._favoriteChangeHandler = this._favoriteChangeHandler.bind(this);
+    this._offerChangeHandler = this._offerChangeHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formResetHandler = this._formResetHandler.bind(this);
 
@@ -239,7 +240,6 @@ export default class TripForm extends AbstractView {
 
   restoreHandlers() {
     this._setInnerHandlers();
-    this.setFavoriteClickHandler(this._callback.favoriteClick);
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormResetHandler(this._callback.formReset);
   }
@@ -264,6 +264,14 @@ export default class TripForm extends AbstractView {
     this.getElement()
       .querySelector(`#event-price-${this._data.id}`)
       .addEventListener(`input`, this._priceInputHandler);
+
+    this.getElement()
+      .querySelector(`.event__favorite-checkbox`)
+      .addEventListener(`change`, this._favoriteChangeHandler);
+
+    this.getElement()
+      .querySelectorAll(`.event__offer-checkbox`)
+      .forEach((item) => item.addEventListener(`change`, this._offerChangeHandler));
   }
 
   _checkDestinationValidation(evt) {
@@ -328,9 +336,12 @@ export default class TripForm extends AbstractView {
     }, true);
   }
 
-  _favoriteClickHandler(evt) {
+  _favoriteChangeHandler(evt) {
     evt.preventDefault();
-    this._callback.favoriteClick();
+
+    this.updateData({
+      isFavorite: !this._data.isFavorite
+    }, true);
   }
 
   _formSubmitHandler(evt) {
@@ -343,9 +354,16 @@ export default class TripForm extends AbstractView {
     this._callback.formReset();
   }
 
-  setFavoriteClickHandler(callback) {
-    this._callback.favoriteClick = callback;
-    this.getElement().querySelector(`.event__favorite-checkbox`).addEventListener(`change`, this._favoriteClickHandler);
+  _offerChangeHandler(evt) {
+    evt.preventDefault();
+
+    const type = this._data.type;
+    const index = type.offers.findIndex((offer) => offer.name === evt.target.value);
+    type.offers[index].isChecked = !type.offers[index].isChecked;
+
+    this.updateData({
+      type
+    }, true);
   }
 
   setFormSubmitHandler(callback) {
