@@ -1,6 +1,6 @@
 import TripEventView from '../view/trip-event';
 import TripFormView from '../view/trip-form';
-import {render, replace} from '../utils/render';
+import {render, replace, remove} from '../utils/render';
 import {RenderPosition, KeyCode} from '../const';
 
 export default class Event {
@@ -18,6 +18,9 @@ export default class Event {
   init(event) {
     this._event = event;
 
+    const prevEventComponent = this._eventComponent;
+    const prevEventEditComponent = this._eventEditComponent;
+
     this._eventComponent = new TripEventView(event);
     this._eventEditComponent = new TripFormView(event);
 
@@ -25,15 +28,34 @@ export default class Event {
     this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._eventEditComponent.setFormResetHandler(this._handleFormReset);
 
-    render(this._eventContainer, this._eventComponent, RenderPosition.BEFOREEND);
+    if (prevEventComponent === null || prevEventEditComponent === null) {
+      render(this._eventContainer, this._eventComponent, RenderPosition.BEFOREEND);
+      return;
+    }
+
+    if (this._eventContainer.contains(prevEventComponent.getElement())) {
+      replace(this._eventComponent, prevEventComponent);
+    }
+
+    if (this._eventContainer.contains(prevEventEditComponent.getElement())) {
+      replace(this._eventEditComponent, prevEventEditComponent);
+    }
+
+    remove(prevEventComponent);
+    remove(prevEventEditComponent);
+  }
+
+  destroy() {
+    remove(this._eventComponent);
+    remove(this._eventEditComponent);
   }
 
   _replacePointToForm() {
-    replace(this._eventEditComonent, this._eventComponent);
+    replace(this._eventEditComponent, this._eventComponent);
   }
 
   _replaceFormToPoint() {
-    replace(this._eventComponent, this._eventEditComonent);
+    replace(this._eventComponent, this._eventEditComponent);
   }
 
   _onEscKeyDown(evt) {
