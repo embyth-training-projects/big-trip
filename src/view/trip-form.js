@@ -299,16 +299,33 @@ export default class TripForm extends SmartView {
       .forEach((item) => item.addEventListener(`change`, this._offerChangeHandler));
   }
 
-  _checkDestinationValidation(evt) {
+  _checkDestinationValidation(input) {
     let isValid = false;
-    const isDataCorrect = DESTINATIONS.includes(evt.target.value);
+    const isDataCorrect = DESTINATIONS.includes(input.value);
 
-    if (evt.target.validity.valueMissing || evt.target.value === ``) {
-      evt.target.setCustomValidity(`Select value from the list below, please!`);
+    if (input.validity.valueMissing || input.value === ``) {
+      input.setCustomValidity(`Select value from the list below, please!`);
     } else if (!isDataCorrect) {
-      evt.target.setCustomValidity(`Can't find your destination, try to select value from hints below, please!`);
+      input.setCustomValidity(`Can't find your destination, try to select value from hints below, please!`);
     } else {
-      evt.target.setCustomValidity(``);
+      input.setCustomValidity(``);
+      isValid = true;
+    }
+
+    return isValid;
+  }
+
+  _checkPriceValidation(input) {
+    let isValid = false;
+    const isDataCorrect = +input.value >= 0;
+    const isStartedWithZero = /^(?:[1-9][0-9]*|0)$/.test(input.value);
+
+    if (input.validity.valueMissing || input.value === ``) {
+      input.setCustomValidity(`Indicate the price you spend on this event, if it's free - write 0!`);
+    } else if (!isDataCorrect || !isStartedWithZero) {
+      input.setCustomValidity(`Your price can't be negative number or starts with leading zero, please, correct your value!`);
+    } else {
+      input.setCustomValidity(``);
       isValid = true;
     }
 
@@ -329,11 +346,8 @@ export default class TripForm extends SmartView {
 
   _destinationChangeHandler(evt) {
     evt.preventDefault();
-    if (evt.target.value === this._data.city.name) {
-      return;
-    }
 
-    if (this._checkDestinationValidation(evt)) {
+    if (this._checkDestinationValidation(evt.target)) {
       this.updateData({
         city: {
           name: evt.target.value,
@@ -360,9 +374,14 @@ export default class TripForm extends SmartView {
 
   _priceInputHandler(evt) {
     evt.preventDefault();
-    this.updateData({
-      price: evt.target.value
-    }, true);
+
+    if (this._checkPriceValidation(evt.target)) {
+      this.updateData({
+        price: evt.target.value
+      }, true);
+    } else {
+      this.getElement().reportValidity();
+    }
   }
 
   _favoriteChangeHandler(evt) {
@@ -387,7 +406,14 @@ export default class TripForm extends SmartView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(TripForm.parseDataToEvent(this._data));
+    if (
+      this._checkDestinationValidation(this.getElement().querySelector(`#event-destination-${this._data.id}`)) &&
+      this._checkPriceValidation(this.getElement().querySelector(`#event-price-${this._data.id}`))
+    ) {
+      this._callback.formSubmit(TripForm.parseDataToEvent(this._data));
+    } else {
+      this.getElement().reportValidity();
+    }
   }
 
   _deleteClickHandler(evt) {

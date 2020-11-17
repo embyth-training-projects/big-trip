@@ -14,7 +14,7 @@ const BLANK_EVENT = {
     offers: generateOffers(EVENT_TYPE.TRANSFER[0]),
   },
   price: 0,
-  dateRange: [new Date(), new Date()].sort((a, b) => a.getTime() - b.getTime()),
+  dateRange: [new Date(), new Date()],
   isFavorite: false,
 };
 
