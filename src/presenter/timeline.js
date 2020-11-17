@@ -22,8 +22,11 @@ export default class Timeline {
     this._noEventsComponent = new NoEventView();
 
     this._handleModeChange = this._handleModeChange.bind(this);
-    this._handleEventChange = this._handleEventChange.bind(this);
+    this._handleViewAction = this._handleViewAction.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+
+    this._eventsModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -47,8 +50,12 @@ export default class Timeline {
       .forEach((presenter) => presenter.resetView());
   }
 
-  _handleEventChange(updatedEvent) {
-    this._eventPresenter[updatedEvent.id].init(updatedEvent);
+  _handleViewAction(actionType, updateType, update) {
+    console.log(actionType, updateType, update);
+  }
+
+  _handleModelEvent(updateType, data) {
+    console.log(updateType, data);
   }
 
   _handleSortTypeChange(sortType) {
@@ -68,7 +75,7 @@ export default class Timeline {
   }
 
   _renderEvent(event, container) {
-    const eventPresenter = new EventPresenter(container, this._handleEventChange, this._handleModeChange);
+    const eventPresenter = new EventPresenter(container, this._handleViewAction, this._handleModeChange);
     eventPresenter.init(event);
     this._eventPresenter[event.id] = eventPresenter;
   }

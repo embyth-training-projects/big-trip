@@ -1,7 +1,7 @@
 import TripEventView from '../view/trip-event';
 import TripFormView from '../view/trip-form';
 import {render, replace, remove} from '../utils/render';
-import {RenderPosition, KeyCode, Mode} from '../const';
+import {RenderPosition, KeyCode, Mode, UserAction, UpdateType} from '../const';
 
 export default class Event {
   constructor(eventContainer, changeData, changeMode) {
@@ -88,7 +88,11 @@ export default class Event {
   }
 
   _handleFormSubmit(event) {
-    this._changeData(event);
+    this._changeData(
+        UserAction.UPDATE_EVENT,
+        UpdateType.MINOR,
+        event
+    );
     this._replaceFormToPoint();
   }
 
