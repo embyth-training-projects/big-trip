@@ -12,13 +12,12 @@ export default class Timeline {
     this._timelineContainer = timelineContainer;
     this._eventsModel = eventsModel;
 
+    this._eventPresenter = {};
     this._currentSortType = SortType.DEFAULT;
 
     this._timelineComponent = null;
+    this._sortComponent = null;
 
-    this._eventPresenter = {};
-
-    this._sortComponent = new SortView();
     this._noEventsComponent = new NoEventView();
 
     this._handleModeChange = this._handleModeChange.bind(this);
@@ -70,10 +69,12 @@ export default class Timeline {
         this._eventPresenter[data.id].init(data);
         break;
       case UpdateType.MINOR:
-        // обновить список
+        this._clearTimeline();
+        this._renderTimeline();
         break;
       case UpdateType.MAJOR:
-        // обновить весю ленту
+        this._clearTimeline({resetSortType: true});
+        this._renderTimeline();
         break;
     }
   }
@@ -89,7 +90,11 @@ export default class Timeline {
   }
 
   _renderSort() {
-    this._sortComponent.updateCurrentSortType(this._currentSortType);
+    if (this._sortComponent !== null) {
+      this._sortComponent = null;
+    }
+
+    this._sortComponent = new SortView(this._currentSortType);
     this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
     render(this._timelineContainer, this._sortComponent, RenderPosition.BEFOREEND);
   }
@@ -132,13 +137,19 @@ export default class Timeline {
     render(this._timelineContainer, this._noEventsComponent, RenderPosition.BEFOREEND);
   }
 
-  _clearTimeline() {
-    remove(this._sortComponent);
-    remove(this._timelineComponent);
+  _clearTimeline({resetSortType = false} = {}) {
     Object
       .values(this._eventPresenter)
       .forEach((presenter) => presenter.destroy());
     this._eventPresenter = {};
+
+    remove(this._sortComponent);
+    remove(this._noEventsComponent);
+    remove(this._timelineComponent);
+
+    if (resetSortType) {
+      this._currentSortType = SortType.DEFAULT;
+    }
   }
 
   _renderTimeline() {

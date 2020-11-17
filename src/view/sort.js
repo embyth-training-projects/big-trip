@@ -37,20 +37,16 @@ const createTripSortTemplate = (sortType) => {
 };
 
 export default class Sort extends AbstractView {
-  constructor() {
+  constructor(currentSortType) {
     super();
 
-    this._currentSortType = null;
+    this._currentSortType = currentSortType;
 
     this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
   }
 
   getTemplate() {
     return createTripSortTemplate(this._currentSortType);
-  }
-
-  updateCurrentSortType(sortType) {
-    this._currentSortType = sortType;
   }
 
   _sortTypeChangeHandler(evt) {
