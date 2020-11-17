@@ -15,7 +15,7 @@ export default class Events extends Observer {
     return this._events;
   }
 
-  updateItem(updateType, update) {
+  updateEvent(updateType, update) {
     const index = this._events.findIndex((event) => event.id === update.id);
 
     if (index === -1) {

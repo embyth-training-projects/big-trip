@@ -5,7 +5,7 @@ import EventPresenter from './event';
 import NoEventView from '../view/no-event';
 import {render, remove} from '../utils/render';
 import {getTripDays, filterEventsByDay, sortEventsByTime, sortEventsByPrice} from '../utils/trip';
-import {RenderPosition, SortType} from '../const';
+import {RenderPosition, SortType, UserAction, UpdateType} from '../const';
 
 export default class Timeline {
   constructor(timelineContainer, eventsModel) {
@@ -51,11 +51,31 @@ export default class Timeline {
   }
 
   _handleViewAction(actionType, updateType, update) {
-    console.log(actionType, updateType, update);
+    switch (actionType) {
+      case UserAction.UPDATE_EVENT:
+        this._eventsModel.updateEvent(updateType, update);
+        break;
+      case UserAction.ADD_EVENT:
+        this._eventsModel.addEvent(updateType, update);
+        break;
+      case UserAction.DELETE_EVENT:
+        this._eventsModel.deleteEvent(updateType, update);
+        break;
+    }
   }
 
   _handleModelEvent(updateType, data) {
-    console.log(updateType, data);
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this._eventPresenter[data.id].init(data);
+        break;
+      case UpdateType.MINOR:
+        // обновить список
+        break;
+      case UpdateType.MAJOR:
+        // обновить весю ленту
+        break;
+    }
   }
 
   _handleSortTypeChange(sortType) {
