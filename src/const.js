@@ -23,6 +23,7 @@ export const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
   AFTEREND: `afterend`,
   BEFOREEND: `beforeend`,
+  BEFOREBEGIN: `beforebegin`,
 };
 
 export const KeyCode = {

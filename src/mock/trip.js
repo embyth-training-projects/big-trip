@@ -97,7 +97,7 @@ const generateDate = () => {
   return currentDate;
 };
 
-const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+export const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
 
 export const generateTrip = () => {
   const type = generateType();

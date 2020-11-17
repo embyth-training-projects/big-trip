@@ -102,7 +102,7 @@ const createTypeListTemplate = (id, typeName) => {
   );
 };
 
-const createTripFormTemplate = (event) => {
+const createTripFormTemplate = (event, isNewEvent) => {
   const {id, city, type, price, dateRange, isFavorite} = event;
   const {name: cityName, description, photos} = city;
   const {name: typeName, offers} = type;
@@ -157,9 +157,11 @@ const createTripFormTemplate = (event) => {
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">Delete</button>
+        <button class="event__reset-btn" type="reset">${isNewEvent ? `Cancel` : `Delete`}</button>
 
-        <input id="event-favorite-${id}" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
+    ${isNewEvent
+      ? ``
+      : `<input id="event-favorite-${id}" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
         <label class="event__favorite-btn" for="event-favorite-${id}">
           <span class="visually-hidden">Add to favorite</span>
           <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
@@ -169,30 +171,34 @@ const createTripFormTemplate = (event) => {
 
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Close event</span>
-        </button>
-      </header>
-      <section class="event__details">
+        </button>`}
 
+      </header>
+
+     ${(offers.length || description || photos.length)
+      ? `<section class="event__details">
         ${offersTemplate}
 
       ${(description || photos.length)
       ? `<section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
           <p class="event__destination-description">${description}</p>
-          ${photosTemplate}
+            ${photosTemplate}
         </section>`
       : ``}
 
-      </section>
+        </section>`
+      : ``}
     </form>`
   );
 };
 
 export default class TripForm extends SmartView {
-  constructor(event) {
+  constructor(event, isNewEvent = false) {
     super();
 
     this._data = TripForm.parseEventToData(event);
+    this._isNewEvent = isNewEvent;
     this._startDatepicker = null;
     this._endDatepicker = null;
 
@@ -223,7 +229,7 @@ export default class TripForm extends SmartView {
   }
 
   getTemplate() {
-    return createTripFormTemplate(this._data);
+    return createTripFormTemplate(this._data, this._isNewEvent);
   }
 
   restoreHandlers() {
@@ -282,9 +288,11 @@ export default class TripForm extends SmartView {
       .querySelector(`#event-price-${this._data.id}`)
       .addEventListener(`input`, this._priceInputHandler);
 
-    this.getElement()
-      .querySelector(`.event__favorite-checkbox`)
-      .addEventListener(`change`, this._favoriteChangeHandler);
+    if (!this._isNewEvent) {
+      this.getElement()
+        .querySelector(`.event__favorite-checkbox`)
+        .addEventListener(`change`, this._favoriteChangeHandler);
+    }
 
     this.getElement()
       .querySelectorAll(`.event__offer-checkbox`)
@@ -403,10 +411,12 @@ export default class TripForm extends SmartView {
   }
 
   setFormCloseClickHandler(callback) {
-    this._callback.formClose = callback;
-    this.getElement()
-      .querySelector(`.event__rollup-btn`)
-      .addEventListener(`click`, this._formCloseHandler);
+    if (!this._isNewEvent) {
+      this._callback.formClose = callback;
+      this.getElement()
+        .querySelector(`.event__rollup-btn`)
+        .addEventListener(`click`, this._formCloseHandler);
+    }
   }
 
   static parseEventToData(event) {

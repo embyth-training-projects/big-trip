@@ -3,10 +3,11 @@ import TripListView from '../view/trip-list';
 import TripDayView from '../view/trip-item';
 import EventPresenter from './event';
 import NoEventView from '../view/no-event';
+import NewEventPresenter from './new-event';
 import {render, remove} from '../utils/render';
 import {filter} from '../utils/filter';
 import {getTripDays, filterEventsByDay, sortEventsByTime, sortEventsByPrice} from '../utils/trip';
-import {RenderPosition, SortType, UserAction, UpdateType} from '../const';
+import {RenderPosition, SortType, UserAction, UpdateType, FilterType} from '../const';
 
 export default class Timeline {
   constructor(timelineContainer, filterModel, eventsModel) {
@@ -17,9 +18,9 @@ export default class Timeline {
     this._eventPresenter = {};
     this._currentSortType = SortType.DEFAULT;
 
-    this._timelineComponent = null;
     this._sortComponent = null;
 
+    this._timelineComponent = new TripListView(this._getEvents());
     this._noEventsComponent = new NoEventView();
 
     this._handleModeChange = this._handleModeChange.bind(this);
@@ -29,10 +30,18 @@ export default class Timeline {
 
     this._eventsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
+
+    this._newEventPresenter = new NewEventPresenter(this._timelineComponent, this._handleViewAction);
   }
 
   init() {
     this._renderTimeline();
+  }
+
+  createEvent() {
+    this._currentSortType = SortType.DEFAULT;
+    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this._newEventPresenter.init();
   }
 
   _getEvents() {
@@ -51,6 +60,8 @@ export default class Timeline {
   }
 
   _handleModeChange() {
+    this._newEventPresenter.destroy();
+
     Object
       .values(this._eventPresenter)
       .forEach((presenter) => presenter.resetView());
@@ -135,7 +146,6 @@ export default class Timeline {
   }
 
   _renderEventsList() {
-    this._timelineComponent = new TripListView(this._getEvents());
     render(this._timelineContainer, this._timelineComponent, RenderPosition.BEFOREEND);
     this._renderEvents();
   }
@@ -145,6 +155,8 @@ export default class Timeline {
   }
 
   _clearTimeline({resetSortType = false} = {}) {
+    this._newEventPresenter.destroy();
+
     Object
       .values(this._eventPresenter)
       .forEach((presenter) => presenter.destroy());
