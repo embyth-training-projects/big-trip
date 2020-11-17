@@ -3,7 +3,6 @@ import TripListView from '../view/trip-list';
 import TripDayView from '../view/trip-item';
 import EventPresenter from './event';
 import NoEventView from '../view/no-event';
-import {updateItem} from '../utils/common';
 import {render, remove} from '../utils/render';
 import {getTripDays, filterEventsByDay, sortEventsByTime, sortEventsByPrice} from '../utils/trip';
 import {RenderPosition, SortType} from '../const';
@@ -15,7 +14,6 @@ export default class Timeline {
 
     this._currentSortType = SortType.DEFAULT;
 
-    this._timelineEvents = null;
     this._timelineComponent = null;
 
     this._eventPresenter = {};
@@ -28,16 +26,18 @@ export default class Timeline {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
-  init(events) {
-    this._timelineEvents = events.slice();
-    this._sourcedEvents = events.slice();
-
-    this._timelineComponent = new TripListView(this._timelineEvents);
-
+  init() {
     this._renderTimeline();
   }
 
   _getEvents() {
+    switch (this._currentSortType) {
+      case SortType.TIME:
+        return this._eventsModel.getEvents().sort(sortEventsByTime);
+      case SortType.PRICE:
+        return this._eventsModel.getEvents().sort(sortEventsByPrice);
+    }
+
     return this._eventsModel.getEvents();
   }
 
@@ -48,24 +48,7 @@ export default class Timeline {
   }
 
   _handleEventChange(updatedEvent) {
-    this._timelineEvents = updateItem(this._timelineEvents, updatedEvent);
-    this._sourcedEvents = updateItem(this._sourcedEvents, updatedEvent);
     this._eventPresenter[updatedEvent.id].init(updatedEvent);
-  }
-
-  _sortEvents(sortType) {
-    switch (sortType) {
-      case SortType.TIME:
-        this._timelineEvents.sort(sortEventsByTime);
-        break;
-      case SortType.PRICE:
-        this._timelineEvents.sort(sortEventsByPrice);
-        break;
-      default:
-        this._timelineEvents = this._sourcedEvents.slice();
-    }
-
-    this._currentSortType = sortType;
   }
 
   _handleSortTypeChange(sortType) {
@@ -73,7 +56,7 @@ export default class Timeline {
       return;
     }
 
-    this._sortEvents(sortType);
+    this._currentSortType = sortType;
     this._clearTimeline();
     this._renderTimeline();
   }
@@ -93,11 +76,11 @@ export default class Timeline {
   _renderEvents() {
     // Если сортировка по умолчанию (Event) отрисовываем список с датами
     if (this._currentSortType === SortType.DEFAULT) {
-      getTripDays(this._timelineEvents).forEach((day, index) => {
+      getTripDays(this._getEvents()).forEach((day, index) => {
         const tripDayComponent = new TripDayView(day, index + 1);
 
         render(this._timelineComponent, tripDayComponent, RenderPosition.BEFOREEND);
-        const filteredEventsByDay = filterEventsByDay(this._timelineEvents, day);
+        const filteredEventsByDay = filterEventsByDay(this._getEvents(), day);
 
         filteredEventsByDay.forEach((event) => {
           this._renderEvent(event, tripDayComponent.getContainer(day));
@@ -105,7 +88,7 @@ export default class Timeline {
       });
     } else { // В противном случаем список отрисовывается без дат
       const tripDayComponent = new TripDayView();
-      this._timelineEvents.forEach((event) => {
+      this._getEvents().forEach((event) => {
         render(this._timelineComponent, tripDayComponent, RenderPosition.BEFOREEND);
         this._renderEvent(event, tripDayComponent.getContainer());
       });
@@ -113,7 +96,9 @@ export default class Timeline {
   }
 
   _renderEventsList() {
+    this._timelineComponent = new TripListView(this._getEvents());
     render(this._timelineContainer, this._timelineComponent, RenderPosition.BEFOREEND);
+    this._renderEvents();
   }
 
   _renderNoEvents() {
@@ -130,13 +115,12 @@ export default class Timeline {
   }
 
   _renderTimeline() {
-    if (!this._timelineEvents.length) {
+    if (!this._getEvents().length) {
       this._renderNoEvents();
       return;
     }
 
     this._renderSort();
     this._renderEventsList();
-    this._renderEvents();
   }
 }

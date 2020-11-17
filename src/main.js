@@ -28,4 +28,4 @@ render(menuContainer, new MenuView(), RenderPosition.AFTEREND);
 render(filterContainer, new FilterView(), RenderPosition.AFTEREND);
 render(tripMainElement, new NewEventButtonView(), RenderPosition.BEFOREEND);
 
-timelinePresenter.init(events);
+timelinePresenter.init();
