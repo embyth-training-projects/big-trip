@@ -47,3 +47,13 @@ export const isDatesChanged = (dateRangeA, dateRangeB) => {
 export const isPriceChanged = (priceA, priceB) => {
   return !(priceA === priceB);
 };
+
+export const isEventPassed = (date) => {
+  if (date === null) {
+    return false;
+  }
+
+  const currentDate = moment();
+
+  return moment(date).isBefore(currentDate);
+};

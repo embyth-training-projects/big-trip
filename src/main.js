@@ -28,7 +28,7 @@ const timelinePresenter = new TimelinePresenter(tripEventsElement, eventsModel);
 
 render(tripMainElement, new TripInfoView(events), RenderPosition.AFTERBEGIN);
 render(menuContainer, new MenuView(), RenderPosition.AFTEREND);
-render(filterContainer, new FilterView(), RenderPosition.AFTEREND);
+render(filterContainer, new FilterView(`everything`), RenderPosition.AFTEREND);
 render(tripMainElement, new NewEventButtonView(), RenderPosition.BEFOREEND);
 
 timelinePresenter.init();
