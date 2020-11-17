@@ -24,7 +24,7 @@ const filterModel = new FilterModel();
 
 eventsModel.setEvents(events);
 
-const timelinePresenter = new TimelinePresenter(tripEventsElement, eventsModel);
+const timelinePresenter = new TimelinePresenter(tripEventsElement, filterModel, eventsModel);
 const filterPresenter = new FilterPresenter(filterContainer, filterModel, eventsModel);
 
 render(tripMainElement, new TripInfoView(events), RenderPosition.AFTERBEGIN);

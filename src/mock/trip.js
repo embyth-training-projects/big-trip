@@ -84,7 +84,7 @@ const generatePrice = () => {
 
 const generateDate = () => {
   let currentDate = new Date();
-  currentDate.setDate(currentDate.getDate() + getRandomInteger(0, 5));
+  currentDate.setDate(currentDate.getDate() + getRandomInteger(-2, 2));
 
   const hour = getRandomInteger(0, 23);
   const minutes = getRandomInteger(0, 59);

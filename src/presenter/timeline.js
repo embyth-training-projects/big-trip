@@ -4,12 +4,14 @@ import TripDayView from '../view/trip-item';
 import EventPresenter from './event';
 import NoEventView from '../view/no-event';
 import {render, remove} from '../utils/render';
+import {filter} from '../utils/filter';
 import {getTripDays, filterEventsByDay, sortEventsByTime, sortEventsByPrice} from '../utils/trip';
 import {RenderPosition, SortType, UserAction, UpdateType} from '../const';
 
 export default class Timeline {
-  constructor(timelineContainer, eventsModel) {
+  constructor(timelineContainer, filterModel, eventsModel) {
     this._timelineContainer = timelineContainer;
+    this._filterModel = filterModel;
     this._eventsModel = eventsModel;
 
     this._eventPresenter = {};
@@ -26,6 +28,7 @@ export default class Timeline {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
     this._eventsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -33,14 +36,18 @@ export default class Timeline {
   }
 
   _getEvents() {
+    const filterType = this._filterModel.getFilter();
+    const events = this._eventsModel.getEvents();
+    const filteredEvents = filter[filterType](events);
+
     switch (this._currentSortType) {
       case SortType.TIME:
-        return this._eventsModel.getEvents().sort(sortEventsByTime);
+        return filteredEvents.sort(sortEventsByTime);
       case SortType.PRICE:
-        return this._eventsModel.getEvents().sort(sortEventsByPrice);
+        return filteredEvents.sort(sortEventsByPrice);
     }
 
-    return this._eventsModel.getEvents();
+    return filteredEvents;
   }
 
   _handleModeChange() {
