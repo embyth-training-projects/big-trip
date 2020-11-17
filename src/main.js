@@ -4,6 +4,7 @@ import NewEventButtonView from './view/new-event-button';
 import TripInfoView from './view/trip-info';
 import TimelinePresenter from './presenter/timeline';
 import EventsModel from './model/events';
+import FilterModel from './model/filter';
 import {generateTrip} from './mock/trip';
 import {render} from './utils/render';
 import {TRIP_EVENTS_COUNT, RenderPosition} from './const';
@@ -20,6 +21,8 @@ const tripEventsElement = document.querySelector(`.trip-events`);
 
 const eventsModel = new EventsModel();
 eventsModel.setEvents(events);
+
+const filterModel = new FilterModel();
 
 const timelinePresenter = new TimelinePresenter(tripEventsElement, eventsModel);
 
