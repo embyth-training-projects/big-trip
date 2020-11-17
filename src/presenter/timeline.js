@@ -9,8 +9,9 @@ import {getTripDays, filterEventsByDay, sortEventsByTime, sortEventsByPrice} fro
 import {RenderPosition, SortType} from '../const';
 
 export default class Timeline {
-  constructor(timelineContainer) {
+  constructor(timelineContainer, eventsModel) {
     this._timelineContainer = timelineContainer;
+    this._eventsModel = eventsModel;
 
     this._currentSortType = SortType.DEFAULT;
 
@@ -34,6 +35,10 @@ export default class Timeline {
     this._timelineComponent = new TripListView(this._timelineEvents);
 
     this._renderTimeline();
+  }
+
+  _getEvents() {
+    return this._eventsModel.getEvents();
   }
 
   _handleModeChange() {

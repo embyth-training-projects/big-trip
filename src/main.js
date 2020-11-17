@@ -3,6 +3,7 @@ import FilterView from './view/filter';
 import NewEventButtonView from './view/new-event-button';
 import TripInfoView from './view/trip-info';
 import TimelinePresenter from './presenter/timeline';
+import EventsModel from './model/events';
 import {generateTrip} from './mock/trip';
 import {render} from './utils/render';
 import {TRIP_EVENTS_COUNT, RenderPosition} from './const';
@@ -17,7 +18,10 @@ const menuContainer = tripMainElement.querySelector(`h2:nth-child(1)`);
 const filterContainer = tripMainElement.querySelector(`h2:nth-child(2)`);
 const tripEventsElement = document.querySelector(`.trip-events`);
 
-const timelinePresenter = new TimelinePresenter(tripEventsElement);
+const eventsModel = new EventsModel();
+eventsModel.setEvents(events);
+
+const timelinePresenter = new TimelinePresenter(tripEventsElement, eventsModel);
 
 render(tripMainElement, new TripInfoView(events), RenderPosition.AFTERBEGIN);
 render(menuContainer, new MenuView(), RenderPosition.AFTEREND);
