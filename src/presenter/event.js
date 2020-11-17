@@ -1,6 +1,7 @@
 import TripEventView from '../view/trip-event';
 import TripFormView from '../view/trip-form';
 import {render, replace, remove} from '../utils/render';
+import {isDatesChanged, isPriceChanged} from '../utils/trip';
 import {RenderPosition, KeyCode, Mode, UserAction, UpdateType} from '../const';
 
 export default class Event {
@@ -15,7 +16,7 @@ export default class Event {
 
     this._handleEditClick = this._handleEditClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
-    this._handleFormReset = this._handleFormReset.bind(this);
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
     this._handleFormClose = this._handleFormClose.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
@@ -31,7 +32,7 @@ export default class Event {
 
     this._eventComponent.setEditClickHandler(this._handleEditClick);
     this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
-    this._eventEditComponent.setFormResetHandler(this._handleFormReset);
+    this._eventEditComponent.setDeleteClickHandler(this._handleDeleteClick);
     this._eventEditComponent.setFormCloseClickHandler(this._handleFormClose);
 
     if (prevEventComponent === null || prevEventEditComponent === null) {
@@ -64,6 +65,7 @@ export default class Event {
 
   _replacePointToForm() {
     replace(this._eventEditComponent, this._eventComponent);
+    this._eventEditComponent.setDatepickers();
     document.addEventListener(`keydown`, this._onEscKeyDown);
     this._changeMode();
     this._mode = Mode.EDITING;
@@ -71,6 +73,7 @@ export default class Event {
 
   _replaceFormToPoint() {
     replace(this._eventComponent, this._eventEditComponent);
+    this._eventEditComponent.destroyDatepickers();
     document.removeEventListener(`keydown`, this._onEscKeyDown);
     this._mode = Mode.DEFAULT;
   }
@@ -88,16 +91,24 @@ export default class Event {
   }
 
   _handleFormSubmit(event) {
+    const isMinorUpdate =
+      isDatesChanged(this._event.dateRange, event.dateRange) ||
+      isPriceChanged(this._event.price, event.price);
+
     this._changeData(
         UserAction.UPDATE_EVENT,
-        UpdateType.MINOR,
+        isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
         event
     );
     this._replaceFormToPoint();
   }
 
-  _handleFormReset() {
-    this._replaceFormToPoint();
+  _handleDeleteClick(event) {
+    this._changeData(
+        UserAction.DELETE_EVENT,
+        UpdateType.MINOR,
+        event
+    );
   }
 
   _handleFormClose() {

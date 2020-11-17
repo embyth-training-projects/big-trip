@@ -39,3 +39,11 @@ export const sortEventsByTime = (eventA, eventB) => {
 export const sortEventsByPrice = (eventA, eventB) => {
   return eventB.price - eventA.price;
 };
+
+export const isDatesChanged = (dateRangeA, dateRangeB) => {
+  return !(moment(dateRangeA[0]).isSame(dateRangeB[0]) && moment(dateRangeA[1]).isSame(dateRangeB[1]));
+};
+
+export const isPriceChanged = (priceA, priceB) => {
+  return !(priceA === priceB);
+};

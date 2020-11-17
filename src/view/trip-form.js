@@ -204,10 +204,16 @@ export default class TripForm extends SmartView {
     this._favoriteChangeHandler = this._favoriteChangeHandler.bind(this);
     this._offerChangeHandler = this._offerChangeHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
-    this._formResetHandler = this._formResetHandler.bind(this);
+    this._deleteClickHandler = this._deleteClickHandler.bind(this);
     this._formCloseHandler = this._formCloseHandler.bind(this);
 
     this._setInnerHandlers();
+  }
+
+  removeElement() {
+    super.removeElement();
+
+    this.destroyDatepickers();
   }
 
   reset(event) {
@@ -222,21 +228,22 @@ export default class TripForm extends SmartView {
 
   restoreHandlers() {
     this._setInnerHandlers();
+    this.setDatepickers();
     this.setFormSubmitHandler(this._callback.formSubmit);
-    this.setFormResetHandler(this._callback.formReset);
+    this.setDeleteClickHandler(this._callback.deleteClick);
     this.setFormCloseClickHandler(this._callback.formClose);
   }
 
-  _setDatepickers() {
+  setDatepickers() {
     const timeStartInput = this.getElement().querySelector(`#event-start-time-${this._data.id}`);
     const timeEndInput = this.getElement().querySelector(`#event-end-time-${this._data.id}`);
 
-    this._destroyDatepickers();
+    this.destroyDatepickers();
     this._startDatepicker = this._getDatepicker(timeStartInput, DateType.START);
     this._endDatepicker = this._getDatepicker(timeEndInput, DateType.END);
   }
 
-  _destroyDatepickers() {
+  destroyDatepickers() {
     if (this._startDatepicker) {
       this._startDatepicker.destroy();
       this._startDatepicker = null;
@@ -263,8 +270,6 @@ export default class TripForm extends SmartView {
   }
 
   _setInnerHandlers() {
-    this._setDatepickers();
-
     this.getElement()
       .querySelectorAll(`.event__type-input`)
       .forEach((item) => item.addEventListener(`change`, this._typeChangeHandler));
@@ -377,9 +382,9 @@ export default class TripForm extends SmartView {
     this._callback.formSubmit(TripForm.parseDataToEvent(this._data));
   }
 
-  _formResetHandler(evt) {
+  _deleteClickHandler(evt) {
     evt.preventDefault();
-    this._callback.formReset();
+    this._callback.deleteClick(TripForm.parseDataToEvent(this._data));
   }
 
   _formCloseHandler(evt) {
@@ -392,9 +397,9 @@ export default class TripForm extends SmartView {
     this.getElement().addEventListener(`submit`, this._formSubmitHandler);
   }
 
-  setFormResetHandler(callback) {
-    this._callback.formReset = callback;
-    this.getElement().addEventListener(`reset`, this._formResetHandler);
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().addEventListener(`reset`, this._deleteClickHandler);
   }
 
   setFormCloseClickHandler(callback) {
