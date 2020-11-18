@@ -33,13 +33,12 @@ export default class NewEvent {
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
-  init(newEventButtonComponent) {
+  init(callback) {
     if (this._eventEditComponent !== null) {
       return;
     }
 
-    this._newEventButtonComponent = newEventButtonComponent;
-    this._newEventButtonComponent.disableButton();
+    this._destroyCallback = callback;
 
     this._eventEditComponent = new TripFormView(this._event, this._isNewEvent);
     this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
@@ -56,12 +55,13 @@ export default class NewEvent {
       return;
     }
 
+    if (this._destroyCallback !== null) {
+      this._destroyCallback();
+    }
+
     this._eventEditComponent.destroyDatepickers();
     remove(this._eventEditComponent);
     this._eventEditComponent = null;
-
-    this._newEventButtonComponent.enableButton();
-    this._newEventButtonComponent = null;
 
     document.removeEventListener(`keydown`, this._escKeyDownHandler);
   }

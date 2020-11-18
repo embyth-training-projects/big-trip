@@ -13,6 +13,7 @@ export default class Menu {
 
     this._handleSiteMenuClick = this._handleSiteMenuClick.bind(this);
     this._handleNewEventButtonClick = this._handleNewEventButtonClick.bind(this);
+    this._handleNewEventButtonState = this._handleNewEventButtonState.bind(this);
   }
 
   init() {
@@ -25,8 +26,15 @@ export default class Menu {
     this._newEventButtonComponent.setNewEventButtonClick(this._handleNewEventButtonClick);
   }
 
+  _handleNewEventButtonState() {
+    this._newEventButtonComponent.enableButton();
+    this._siteMenuComponent.setActiveMenuItem(MenuItem.TABLE);
+  }
+
   _handleNewEventButtonClick() {
-    this._timelinePresenter.createEvent(this._newEventButtonComponent);
+    this._newEventButtonComponent.disableButton();
+    this._siteMenuComponent.setActiveMenuItem(MenuItem.TABLE);
+    this._timelinePresenter.createEvent(this._handleNewEventButtonState);
   }
 
   _handleSiteMenuClick(menuItem) {

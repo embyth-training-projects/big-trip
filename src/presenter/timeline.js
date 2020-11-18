@@ -39,10 +39,10 @@ export default class Timeline {
     this._renderTimeline();
   }
 
-  createEvent(newEventButtonComponent) {
+  createEvent(callback) {
     this._currentSortType = SortType.DEFAULT;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this._newEventPresenter.init(newEventButtonComponent);
+    this._newEventPresenter.init(callback);
   }
 
   _getEvents() {
