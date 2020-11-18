@@ -10,10 +10,11 @@ import {getTripDays, filterEventsByDay, sortEventsByTime, sortEventsByPrice} fro
 import {RenderPosition, SortType, UserAction, UpdateType, FilterType} from '../const';
 
 export default class Timeline {
-  constructor(timelineContainer, filterModel, eventsModel) {
+  constructor(timelineContainer, filterModel, eventsModel, offersModel) {
     this._timelineContainer = timelineContainer;
     this._filterModel = filterModel;
     this._eventsModel = eventsModel;
+    this._offersModel = offersModel;
 
     this._eventPresenter = {};
     this._currentSortType = SortType.DEFAULT;
@@ -49,7 +50,7 @@ export default class Timeline {
   createEvent(callback) {
     this._currentSortType = SortType.DEFAULT;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this._newEventPresenter.init(callback);
+    this._newEventPresenter.init(callback, this._getOffers());
   }
 
   _getEvents() {
@@ -65,6 +66,10 @@ export default class Timeline {
     }
 
     return filteredEvents;
+  }
+
+  _getOffers() {
+    return this._offersModel.getOffers();
   }
 
   _handleModeChange() {
@@ -92,7 +97,7 @@ export default class Timeline {
   _handleModelEvent(updateType, data) {
     switch (updateType) {
       case UpdateType.PATCH:
-        this._eventPresenter[data.id].init(data);
+        this._eventPresenter[data.id].init(data, this._getOffers());
         break;
       case UpdateType.MINOR:
         this._clearTimeline();
@@ -127,7 +132,7 @@ export default class Timeline {
 
   _renderEvent(event, container) {
     const eventPresenter = new EventPresenter(container, this._handleViewAction, this._handleModeChange);
-    eventPresenter.init(event);
+    eventPresenter.init(event, this._getOffers());
     this._eventPresenter[event.id] = eventPresenter;
   }
 

@@ -20,7 +20,6 @@ const createOffersTemplate = (offers) => {
       `<h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
         ${offers
-          .filter((offer) => offer.isChecked)
           .slice(0, MAX_OFFERS_DISPLAY)
           .map(createOfferItemTemplate)
           .join(``)}

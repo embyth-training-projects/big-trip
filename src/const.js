@@ -17,6 +17,19 @@ export const EVENT_TYPE = {
   }
 };
 
+export const OffersNameToLabel = {
+  [`seats`]: `Choose seats`,
+  [`meal`]: `Add meal`,
+  [`uber`]: `Order Uber`,
+  [`luggage`]: `Add luggage`,
+  [`lunch`]: `Lunch in city`,
+  [`train`]: `Travel by train`,
+  [`tickets`]: `Book tickets`,
+  [`breakfast`]: `Add breakfast`,
+  [`comfort`]: `Switch to comfort`,
+  [`rent`]: `Rent a car`,
+};
+
 export const setWithInPretext = new Set([`sightseeing`, `restaurant`, `check-in`]);
 
 export const RenderPosition = {

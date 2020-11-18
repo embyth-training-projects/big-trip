@@ -1,19 +1,29 @@
 import SmartView from './smart';
 import {formatEventType, formatDateTime} from '../utils/trip';
 import {capitalizeFirstLetter} from '../utils/common';
-import {generateDescription, generatePhotos, generateOffers} from '../mock/trip';
-import {DESTINATIONS, EVENT_TYPE, DateType} from '../const';
+import {generateDescription, generatePhotos, generateOffersByType} from '../mock/trip';
+import {DESTINATIONS, EVENT_TYPE, DateType, OffersNameToLabel} from '../const';
 import flatpickr from 'flatpickr';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import '../../node_modules/flatpickr/dist/themes/material_blue.css';
 
-const createOfferItemTemplate = (offer, id) => {
-  const {name, label, price, isChecked} = offer;
-  const checked = isChecked ? `checked` : ``;
+const createOfferItemTemplate = (offer, isChecked, id) => {
+  const {label, price} = offer;
+  const getOfferName = (searchedLabel) => {
+    let result;
+    for (const [name, value] of Object.entries(OffersNameToLabel)) {
+      if (searchedLabel === value) {
+        result = name;
+      }
+    }
+    return result;
+  };
+  const name = getOfferName(label);
+
   return (
     `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${name}-${id}" type="checkbox" name="event-offer-${name}" ${checked} value="${name}">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${name}-${id}" type="checkbox" name="event-offer-${name}" ${isChecked} value="${name}">
       <label class="event__offer-label" for="event-offer-${name}-${id}">
         <span class="event__offer-title">${label}</span>
         &plus;
@@ -23,15 +33,19 @@ const createOfferItemTemplate = (offer, id) => {
   );
 };
 
-const createOffersTemplate = (offers, id) => {
-  if (offers.length) {
+const createOffersTemplate = (offers, totalOffers, id) => {
+  const labels = offers.map((offer) => offer.label);
+  if (totalOffers.length) {
     return (
       `<section class="event__section  event__section--offers">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
         <div class="event__available-offers">
-          ${offers
-            .map((offer) => createOfferItemTemplate(offer, id))
+          ${totalOffers
+            .map((offer) => {
+              const isChecked = labels.includes(offer.label) ? `checked` : ``;
+              return createOfferItemTemplate(offer, isChecked, id);
+            })
             .join(``)}
         </div>
       </section>`
@@ -102,16 +116,18 @@ const createTypeListTemplate = (id, typeName) => {
   );
 };
 
-const createTripFormTemplate = (event, isNewEvent) => {
+const createTripFormTemplate = (event, offersData, isNewEvent) => {
   const {id, city, type, price, dateRange, isFavorite} = event;
   const {name: cityName, description, photos} = city;
   const {name: typeName, offers} = type;
+
+  const totalOffers = offersData.filter((offer) => offer.type === typeName).pop().offers;
 
   const typeWithLabel = formatEventType(typeName);
   const formattedStartTime = formatDateTime(dateRange[0]);
   const formattedEndTime = formatDateTime(dateRange[1]);
 
-  const offersTemplate = createOffersTemplate(offers, id);
+  const offersTemplate = createOffersTemplate(offers, totalOffers, id);
   const photosTemplate = createPhotosTemplate(photos);
   const typeListTemplate = createTypeListTemplate(id, typeName);
   const destinationsDatalistTemplate = createDestinationsDatalistTemplate(id);
@@ -175,7 +191,7 @@ const createTripFormTemplate = (event, isNewEvent) => {
 
       </header>
 
-     ${(offers.length || description || photos.length)
+     ${(totalOffers.length || description || photos.length)
       ? `<section class="event__details">
         ${offersTemplate}
 
@@ -194,10 +210,11 @@ const createTripFormTemplate = (event, isNewEvent) => {
 };
 
 export default class TripForm extends SmartView {
-  constructor(event, isNewEvent = false) {
+  constructor(event, offers, isNewEvent = false) {
     super();
 
     this._data = TripForm.parseEventToData(event);
+    this._offers = offers;
     this._isNewEvent = isNewEvent;
     this._startDatepicker = null;
     this._endDatepicker = null;
@@ -229,7 +246,7 @@ export default class TripForm extends SmartView {
   }
 
   getTemplate() {
-    return createTripFormTemplate(this._data, this._isNewEvent);
+    return createTripFormTemplate(this._data, this._offers, this._isNewEvent);
   }
 
   restoreHandlers() {
@@ -339,7 +356,7 @@ export default class TripForm extends SmartView {
     this.updateData({
       type: {
         name: value,
-        offers: generateOffers(value)
+        offers: generateOffersByType(value)
       }
     });
   }
@@ -396,8 +413,17 @@ export default class TripForm extends SmartView {
     evt.preventDefault();
 
     const type = Object.assign({}, this._data.type);
-    const index = type.offers.findIndex((offer) => offer.name === evt.target.value);
-    type.offers[index].isChecked = !type.offers[index].isChecked;
+    const targetItem = this._offers.find((item) => item.type === type.name).offers.find((offer) => offer.label === OffersNameToLabel[evt.target.value]);
+
+    if (evt.target.checked) {
+      type.offers.push(targetItem);
+    } else {
+      const index = type.offers.findIndex((offer) => offer.label === targetItem.label);
+      type.offers = [
+        ...type.offers.slice(0, index),
+        ...type.offers.slice(index + 1)
+      ];
+    }
 
     this.updateData({
       type

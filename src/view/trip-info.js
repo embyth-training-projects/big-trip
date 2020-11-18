@@ -25,7 +25,10 @@ const getTripDates = (events) => {
 };
 
 const getTotalTripCost = (events) => {
-  return events.reduce((total, item) => total + item.price, 0);
+  return events.reduce((total, item) => {
+    const offersSum = item.type.offers.reduce((acc, offer) => acc + offer.price, 0);
+    return +item.price + offersSum + total;
+  }, 0);
 };
 
 const createTripInfoTemplate = (events) => {
