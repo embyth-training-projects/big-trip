@@ -1,5 +1,18 @@
 import {getRandomInteger} from '../utils/common';
-import {DESTINATIONS, EVENT_TYPE} from '../const';
+import {DESTINATIONS, EVENT_TYPE, OffersNameToLabel} from '../const';
+
+const OFFERS = [
+  {name: `seats`, label: `Choose seats`, price: getRandomInteger(5, 200), types: [`flight`, `train`]},
+  {name: `meal`, label: `Add meal`, price: getRandomInteger(5, 200), types: [`flight`, `train`, `ship`]},
+  {name: `uber`, label: `Order Uber`, price: getRandomInteger(5, 200), types: [`taxi`]},
+  {name: `luggage`, label: `Add luggage`, price: getRandomInteger(5, 200), types: [`flight`, `train`, `ship`, `bus`, `transport`, `taxi`]},
+  {name: `lunch`, label: `Lunch in city`, price: getRandomInteger(5, 200), types: [`sightseeing`, `check-in`]},
+  {name: `train`, label: `Travel by train`, price: getRandomInteger(5, 200), types: [`check-in`]},
+  {name: `tickets`, label: `Book tickets`, price: getRandomInteger(5, 200), types: [`sightseeing`, `bus`]},
+  {name: `breakfast`, label: `Add breakfast`, price: getRandomInteger(5, 200), types: [`sightseeing`, `check-in`]},
+  {name: `comfort`, label: `Switch to comfort`, price: getRandomInteger(5, 200), types: [`flight`, `train`, `ship`, `taxi`]},
+  {name: `rent`, label: `Rent a car`, price: getRandomInteger(5, 200), types: [`drive`]},
+];
 
 const SENTENCES = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
@@ -39,21 +52,33 @@ const generateCity = () => {
   return DESTINATIONS[randomIndex];
 };
 
-export const generateOffers = (type) => {
-  const offers = [
-    {name: `seats`, label: `Choose seats`, price: 5, isChecked: Boolean(getRandomInteger(0, 1)), types: [`flight`, `train`]},
-    {name: `meal`, label: `Add meal`, price: 15, isChecked: Boolean(getRandomInteger(0, 1)), types: [`flight`, `train`, `ship`]},
-    {name: `uber`, label: `Order Uber`, price: 20, isChecked: Boolean(getRandomInteger(0, 1)), types: [`taxi`]},
-    {name: `luggage`, label: `Add luggage`, price: 30, isChecked: Boolean(getRandomInteger(0, 1)), types: [`flight`, `train`, `ship`, `bus`, `transport`, `taxi`]},
-    {name: `lunch`, label: `Lunch in city`, price: 30, isChecked: Boolean(getRandomInteger(0, 1)), types: [`sightseeing`, `check-in`]},
-    {name: `train`, label: `Travel by train`, price: 40, isChecked: Boolean(getRandomInteger(0, 1)), types: [`check-in`]},
-    {name: `tickets`, label: `Book tickets`, price: 40, isChecked: Boolean(getRandomInteger(0, 1)), types: [`sightseeing`, `bus`]},
-    {name: `breakfast`, label: `Add breakfast`, price: 50, isChecked: Boolean(getRandomInteger(0, 1)), types: [`sightseeing`, `check-in`]},
-    {name: `comfort`, label: `Switch to comfort`, price: 100, isChecked: Boolean(getRandomInteger(0, 1)), types: [`flight`, `train`, `ship`, `taxi`]},
-    {name: `rent`, label: `Rent a car`, price: 200, isChecked: Boolean(getRandomInteger(0, 1)), types: [`drive`]},
-  ];
+export const generateOffers = () => {
+  const offers = [];
 
-  return offers.filter((offer) => offer.types.includes(type));
+  [...EVENT_TYPE.TRANSFER, ...EVENT_TYPE.ACTIVITY].forEach((item) => {
+    const generatedOffers = OFFERS.filter((offer) => offer.types.includes(item)).map((offer) => {
+      return {
+        label: OffersNameToLabel[offer.name],
+        price: offer.price,
+      };
+    });
+
+    const structure = {
+      type: item,
+      offers: generatedOffers
+    };
+
+    offers.push(structure);
+  });
+
+  return offers;
+};
+
+export const generateOffersByType = (type) => {
+  const typeOffers = generateOffers().find((item) => item.type === type).offers;
+  const index = getRandomInteger(0, typeOffers.length - 1);
+  const item = typeOffers[index];
+  return item ? [item] : [];
 };
 
 export const generatePhotos = () => {
@@ -110,7 +135,7 @@ export const generateTrip = () => {
     },
     type: {
       name: type,
-      offers: generateOffers(type),
+      offers: generateOffersByType(type),
     },
     price: generatePrice(),
     dateRange: [generateDate(), generateDate()].sort((a, b) => a.getTime() - b.getTime()),
