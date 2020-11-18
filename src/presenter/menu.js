@@ -8,6 +8,8 @@ export default class Menu {
     this._menuContainer = menuContainer;
     this._timelinePresenter = timelinePresenter;
 
+    this._currentMenuItem = MenuItem.TABLE;
+
     this._siteMenuComponent = new MenuView();
     this._newEventButtonComponent = new NewEventButtonView();
 
@@ -22,18 +24,23 @@ export default class Menu {
     render(this._menuContainer, this._newEventButtonComponent, RenderPosition.AFTEREND);
 
     this._siteMenuComponent.setMenuClickHandler(this._handleSiteMenuClick);
-    this._siteMenuComponent.setActiveMenuItem(MenuItem.TABLE);
+    this._siteMenuComponent.setActiveMenuItem(this._currentMenuItem);
     this._newEventButtonComponent.setNewEventButtonClick(this._handleNewEventButtonClick);
   }
 
   _handleNewEventButtonState() {
     this._newEventButtonComponent.enableButton();
-    this._siteMenuComponent.setActiveMenuItem(MenuItem.TABLE);
   }
 
   _handleNewEventButtonClick() {
+    if (this._currentMenuItem === MenuItem.STATS) {
+      this._currentMenuItem = MenuItem.TABLE;
+      this._siteMenuComponent.setActiveMenuItem(MenuItem.TABLE);
+      // Убираем статистику
+      this._timelinePresenter.init();
+    }
+
     this._newEventButtonComponent.disableButton();
-    this._siteMenuComponent.setActiveMenuItem(MenuItem.TABLE);
     this._timelinePresenter.createEvent(this._handleNewEventButtonState);
   }
 
@@ -41,13 +48,14 @@ export default class Menu {
     switch (menuItem) {
       case MenuItem.TABLE:
         // Убираем статистику
-        // Отрисовываем ленту
-        // this._timelinePresenter.init();
+        this._timelinePresenter.init();
         break;
       case MenuItem.STATS:
-        // Убираем ленту
+        this._timelinePresenter.destroy();
         // Отрисовываем статистику
         break;
     }
+
+    this._currentMenuItem = menuItem;
   }
 }
