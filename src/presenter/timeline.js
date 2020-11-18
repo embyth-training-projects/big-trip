@@ -19,6 +19,7 @@ export default class Timeline {
     this._currentSortType = SortType.DEFAULT;
 
     this._sortComponent = null;
+    this._newEventButtonComponent = null;
 
     this._timelineComponent = new TripListView(this._getEvents());
     this._noEventsComponent = new NoEventView();
@@ -38,10 +39,10 @@ export default class Timeline {
     this._renderTimeline();
   }
 
-  createEvent() {
+  createEvent(newEventButtonComponent) {
     this._currentSortType = SortType.DEFAULT;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this._newEventPresenter.init();
+    this._newEventPresenter.init(newEventButtonComponent);
   }
 
   _getEvents() {
