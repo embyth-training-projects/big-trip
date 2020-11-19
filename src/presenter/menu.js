@@ -4,9 +4,10 @@ import {MenuItem, RenderPosition} from '../const';
 import {render} from '../utils/render';
 
 export default class Menu {
-  constructor(menuContainer, timelinePresenter) {
+  constructor(menuContainer, timelinePresenter, statisticsPresenter) {
     this._menuContainer = menuContainer;
     this._timelinePresenter = timelinePresenter;
+    this._statisticsPresenter = statisticsPresenter;
 
     this._currentMenuItem = MenuItem.TABLE;
 
@@ -36,7 +37,7 @@ export default class Menu {
     if (this._currentMenuItem === MenuItem.STATS) {
       this._currentMenuItem = MenuItem.TABLE;
       this._siteMenuComponent.setActiveMenuItem(MenuItem.TABLE);
-      // Убираем статистику
+      this._statisticsPresenter.destroy();
       this._timelinePresenter.init();
     }
 
@@ -45,14 +46,18 @@ export default class Menu {
   }
 
   _handleSiteMenuClick(menuItem) {
+    if (menuItem === this._currentMenuItem) {
+      return;
+    }
+
     switch (menuItem) {
       case MenuItem.TABLE:
-        // Убираем статистику
+        this._statisticsPresenter.destroy();
         this._timelinePresenter.init();
         break;
       case MenuItem.STATS:
         this._timelinePresenter.destroy();
-        // Отрисовываем статистику
+        this._statisticsPresenter.init();
         break;
     }
 

@@ -1,6 +1,7 @@
 import StatisticsView from '../view/statistics';
 import {remove, render} from '../utils/render';
-import {RenderPosition} from '../const';
+import {getChartLabelsByType, getChartDataByType} from '../utils/statistics';
+import {RenderPosition, StatisticType} from '../const';
 
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
@@ -46,33 +47,53 @@ export default class Statistics {
 
   _renderMoneyChart(events) {
     const moneyCtx = this._statisticsComponent.getMoneyCtx();
+    const labels = getChartLabelsByType(events, StatisticType.MONEY);
+    const data = getChartDataByType(events, StatisticType.MONEY);
+    const formatter = (val) => `${StatisticType.MONEY.FORMATTER}${val}`;
+    const title = StatisticType.MONEY.TITLE;
 
-    this._setChart(moneyCtx);
+    moneyCtx.height = this._barHeight * labels.length;
+
+    this._setChart(moneyCtx, labels, data, formatter, title);
   }
 
   _renderTransportChart(events) {
     const transportCtx = this._statisticsComponent.getTransportCtx();
+    const labels = getChartLabelsByType(events, StatisticType.TRANSPORT);
+    const data = getChartDataByType(events, StatisticType.TRANSPORT);
+    const formatter = (val) => `${val}${StatisticType.TRANSPORT.FORMATTER}`;
+    const title = StatisticType.TRANSPORT.TITLE;
 
-    this._setChart(transportCtx);
+    transportCtx.height = this._barHeight * labels.length;
+
+    this._setChart(transportCtx, labels, data, formatter, title);
   }
 
   _renderTimeChart(events) {
     const timeCtx = this._statisticsComponent.getTimeCtx();
+    const labels = getChartLabelsByType(events, StatisticType.TIME_SPENT);
+    const data = getChartDataByType(events, StatisticType.TIME_SPENT);
+    const formatter = (val) => `${val}${StatisticType.TIME_SPENT.FORMATTER}`;
+    const title = StatisticType.TIME_SPENT.TITLE;
 
-    this._setChart(timeCtx);
+    timeCtx.height = this._barHeight * labels.length;
+
+    this._setChart(timeCtx, labels, data, formatter, title);
   }
 
-  _setChart(ctx) {
+  _setChart(ctx, labels, data, formatter, title) {
     return new Chart(ctx, {
       plugins: [ChartDataLabels],
       type: `horizontalBar`,
       data: {
-        labels: [`FLY`, `STAY`, `DRIVE`, `LOOK`, `RIDE`], // изменить лейблы
+        labels,
         datasets: [{
-          data: [400, 300, 200, 160, 100], // изменить данные
+          data,
           backgroundColor: `#ffffff`,
           hoverBackgroundColor: `#ffffff`,
-          anchor: `start`
+          anchor: `start`,
+          barThickness: 44,
+          minBarLength: 50,
         }]
       },
       options: {
@@ -84,12 +105,12 @@ export default class Statistics {
             color: `#000000`,
             anchor: `end`,
             align: `start`,
-            formatter: (val) => `€ ${val}` // изменить форматтер
+            formatter
           }
         },
         title: {
           display: true,
-          text: `MONEY`, // изменить заголовок
+          text: title,
           fontColor: `#000000`,
           fontSize: 23,
           position: `left`
@@ -104,8 +125,7 @@ export default class Statistics {
             gridLines: {
               display: false,
               drawBorder: false
-            },
-            barThickness: 44,
+            }
           }],
           xAxes: [{
             ticks: {
@@ -115,8 +135,7 @@ export default class Statistics {
             gridLines: {
               display: false,
               drawBorder: false
-            },
-            minBarLength: 50
+            }
           }],
         },
         legend: {

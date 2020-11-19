@@ -6,6 +6,7 @@ import InfoPresenter from './presenter/info';
 import MenuPresenter from './presenter/menu';
 import TimelinePresenter from './presenter/timeline';
 import FilterPresenter from './presenter/filter';
+import StatisticsPresenter from './presenter/statistics';
 
 import {generateTrip, generateOffers} from './mock/trip';
 import {TRIP_EVENTS_COUNT} from './const';
@@ -30,7 +31,8 @@ offersModel.setOffers(offers);
 
 const infoPresenter = new InfoPresenter(tripMainElement, eventsModel);
 const timelinePresenter = new TimelinePresenter(tripEventsElement, filterModel, eventsModel, offersModel);
-const menuPresenter = new MenuPresenter(menuContainer, timelinePresenter);
+const statisticsPresenter = new StatisticsPresenter(tripEventsElement, eventsModel);
+const menuPresenter = new MenuPresenter(menuContainer, timelinePresenter, statisticsPresenter);
 const filterPresenter = new FilterPresenter(filterContainer, filterModel, eventsModel);
 
 infoPresenter.init();
