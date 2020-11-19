@@ -34,6 +34,6 @@ export default class Statistics extends SmartView {
   }
 
   getTimeCtx() {
-    return this.getElement().querySelector(`.statistics__item--time-spend`);
+    return this.getElement().querySelector(`.statistics__chart--time`);
   }
 }
