@@ -17,6 +17,23 @@ export const EVENT_TYPE = {
   }
 };
 
+export const STATISTICS_LABELS = {
+  TRANSFER: [
+    {name: `taxi`, label: `🚕 TAXI`},
+    {name: `bus`, label: `🚌 BUS`},
+    {name: `train`, label: `🚂 TRAIN`},
+    {name: `ship`, label: `🛳 SHIP`},
+    {name: `transport`, label: `🚊 TRANSPORT`},
+    {name: `drive`, label: `🚗 DRIVE`},
+    {name: `flight`, label: `✈️ FLIGHT`}
+  ],
+  ACTIVITY: [
+    {name: `check-in`, label: `🏨 CHECK-IN`},
+    {name: `sightseeing`, label: `🏛 SIGHTSEEING`},
+    {name: `restaurant`, label: `🍴 RESTAURANT`}
+  ],
+};
+
 export const OffersNameToLabel = {
   [`seats`]: `Choose seats`,
   [`meal`]: `Add meal`,
@@ -29,8 +46,6 @@ export const OffersNameToLabel = {
   [`comfort`]: `Switch to comfort`,
   [`rent`]: `Rent a car`,
 };
-
-export const setWithInPretext = new Set([`sightseeing`, `restaurant`, `check-in`]);
 
 export const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
@@ -80,4 +95,19 @@ export const FilterType = {
 export const MenuItem = {
   TABLE: `Table`,
   STATS: `Stats`,
+};
+
+export const StatisticType = {
+  MONEY: {
+    TITLE: `MONEY`,
+    FORMATTER: `€ `,
+  },
+  TRANSPORT: {
+    TITLE: `TRANSPORT`,
+    FORMATTER: `x`,
+  },
+  TIME_SPENT: {
+    TITLE: `TIME SPENT`,
+    FORMATTER: `H`,
+  },
 };

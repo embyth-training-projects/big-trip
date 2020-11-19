@@ -1,9 +1,9 @@
-import {setWithInPretext} from '../const';
+import {EVENT_TYPE} from '../const';
 import moment from 'moment';
 
 export const formatEventType = (type) => {
   const typeText = type.charAt(0).toUpperCase() + type.slice(1);
-  const label = setWithInPretext.has(type) ? `in` : `to`;
+  const label = EVENT_TYPE.ACTIVITY.includes(type) ? `in` : `to`;
   return `${typeText} ${label} `;
 };
 
