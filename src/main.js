@@ -39,14 +39,16 @@ menuPresenter.init();
 filterPresenter.init();
 timelinePresenter.init();
 
-api.getEvents()
-  .then((events) => eventsModel.setEvents(UpdateType.INIT, events))
-  .catch(() => eventsModel.setEvents([]));
+Promise.all([
+  api.getEvents(),
+  api.getOffers(),
+  api.getDestinations()
+]).then((response) => {
+  const [events, offers, destinations] = response;
 
-api.getOffers()
-  .then((offers) => offersModel.setOffers(offers))
-  .catch(() => offersModel.setOffers([]));
-
-api.getDestinations()
-  .then((destinations) => destinationsModel.setDestinations(destinations))
-  .catch(() => destinationsModel.setDestinations([]));
+  offersModel.setOffers(offers);
+  destinationsModel.setDestinations(destinations);
+  eventsModel.setEvents(UpdateType.INIT, events);
+}).catch((error) => {
+  throw new Error(`Something went wrong! ${error.status}: ${error.statusText}`);
+});

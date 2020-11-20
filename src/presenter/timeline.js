@@ -3,6 +3,7 @@ import TripListView from '../view/trip-list';
 import TripDayView from '../view/trip-item';
 import EventPresenter from './event';
 import NoEventView from '../view/no-event';
+import LoadingView from '../view/loading';
 import NewEventPresenter from './new-event';
 import {render, remove} from '../utils/render';
 import {filter} from '../utils/filter';
@@ -19,12 +20,14 @@ export default class Timeline {
 
     this._eventPresenter = {};
     this._currentSortType = SortType.DEFAULT;
+    this._isLoading = true;
 
     this._sortComponent = null;
     this._newEventButtonComponent = null;
 
     this._timelineComponent = new TripListView(this._getEvents());
     this._noEventsComponent = new NoEventView();
+    this._loadingComponent = new LoadingView();
 
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleViewAction = this._handleViewAction.bind(this);
@@ -112,6 +115,11 @@ export default class Timeline {
         this._clearTimeline({resetSortType: true});
         this._renderTimeline();
         break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        this._clearTimeline({resetSortType: true});
+        this._renderTimeline();
+        break;
     }
   }
 
@@ -133,6 +141,10 @@ export default class Timeline {
     this._sortComponent = new SortView(this._currentSortType);
     this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
     render(this._timelineContainer, this._sortComponent, RenderPosition.BEFOREEND);
+  }
+
+  _renderLoading() {
+    render(this._timelineContainer, this._loadingComponent, RenderPosition.BEFOREEND);
   }
 
   _renderEvent(event, container) {
@@ -182,6 +194,7 @@ export default class Timeline {
 
     remove(this._sortComponent);
     remove(this._noEventsComponent);
+    remove(this._loadingComponent);
     remove(this._timelineComponent);
 
     if (resetSortType) {
@@ -190,6 +203,11 @@ export default class Timeline {
   }
 
   _renderTimeline() {
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
+
     if (!this._getEvents().length) {
       this._renderNoEvents();
       return;
