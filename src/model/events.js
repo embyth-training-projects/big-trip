@@ -1,4 +1,5 @@
 import Observer from './observer';
+import OffersModel from './offers';
 
 export default class Events extends Observer {
   constructor() {
@@ -64,10 +65,10 @@ export default class Events extends Observer {
       },
       type: {
         name: event.type,
-        offers: event.offers,
+        offers: OffersModel.adaptToEvent(event.offers),
       },
       price: event.base_price,
-      dateRange: [event.date_from, event.date_to],
+      dateRange: [new Date(event.date_from), new Date(event.date_to)],
       id: event.id,
       isFavorite: event.is_favorite
     };
