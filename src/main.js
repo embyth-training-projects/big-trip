@@ -8,14 +8,25 @@ import TimelinePresenter from './presenter/timeline';
 import FilterPresenter from './presenter/filter';
 import StatisticsPresenter from './presenter/statistics';
 
+import Api from './api';
+
 import {generateTrip, generateOffers} from './mock/trip';
 import {TRIP_EVENTS_COUNT} from './const';
+
+const AUTHORIZATION = `Basic 249u1jnlknijvfg=`;
+const END_POINT = `https://12.ecmascript.pages.academy/big-trip`;
 
 const events = new Array(TRIP_EVENTS_COUNT)
   .fill()
   .map(generateTrip)
   .sort((a, b) => a.dateRange[0].getTime() - b.dateRange[0].getTime());
 const offers = generateOffers();
+
+const api = new Api(END_POINT, AUTHORIZATION);
+
+api.getPoints().then((points) => {
+  console.log(points);
+});
 
 const tripMainElement = document.querySelector(`.trip-main`);
 const menuContainer = tripMainElement.querySelector(`.trip-main__trip-controls`);
