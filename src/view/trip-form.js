@@ -1,8 +1,7 @@
 import SmartView from './smart';
 import {formatEventType, formatDateTime} from '../utils/trip';
 import {capitalizeFirstLetter} from '../utils/common';
-import {generateDescription, generatePhotos, generateOffersByType} from '../mock/trip';
-import {DESTINATIONS, EVENT_TYPE, DateType, OffersNameToLabel} from '../const';
+import {EVENT_TYPE, DateType} from '../const';
 import flatpickr from 'flatpickr';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
@@ -10,16 +9,7 @@ import '../../node_modules/flatpickr/dist/themes/material_blue.css';
 
 const createOfferItemTemplate = (offer, isChecked, id) => {
   const {label, price} = offer;
-  const getOfferName = (searchedLabel) => {
-    let result;
-    for (const [name, value] of Object.entries(OffersNameToLabel)) {
-      if (searchedLabel === value) {
-        result = name;
-      }
-    }
-    return result;
-  };
-  const name = getOfferName(label);
+  const name = label.toLowerCase().replace(/ /g, `-`);
 
   return (
     `<div class="event__offer-selector">
@@ -75,12 +65,12 @@ const createPhotosTemplate = (photos) => {
   }
 };
 
-const createDestinationsDatalistTemplate = (id) => {
+const createDestinationsDatalistTemplate = (destinations, id) => {
   return (
     `<datalist id="destination-list-${id}">
-      ${DESTINATIONS
+      ${destinations
         .map((destination) => {
-          return `<option value="${destination}"></option>`;
+          return `<option value="${destination.name}"></option>`;
         })
         .join(``)}
     </datalist>`
@@ -116,7 +106,7 @@ const createTypeListTemplate = (id, typeName) => {
   );
 };
 
-const createTripFormTemplate = (event, offersData, isNewEvent) => {
+const createTripFormTemplate = (event, offersData, destinationsData, isNewEvent) => {
   const {id, city, type, price, dateRange, isFavorite} = event;
   const {name: cityName, description, photos} = city;
   const {name: typeName, offers} = type;
@@ -130,7 +120,7 @@ const createTripFormTemplate = (event, offersData, isNewEvent) => {
   const offersTemplate = createOffersTemplate(offers, totalOffers, id);
   const photosTemplate = createPhotosTemplate(photos);
   const typeListTemplate = createTypeListTemplate(id, typeName);
-  const destinationsDatalistTemplate = createDestinationsDatalistTemplate(id);
+  const destinationsDatalistTemplate = createDestinationsDatalistTemplate(destinationsData, id);
 
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
@@ -210,11 +200,12 @@ const createTripFormTemplate = (event, offersData, isNewEvent) => {
 };
 
 export default class TripForm extends SmartView {
-  constructor(event, offers, isNewEvent = false) {
+  constructor(event, offers, destinations, isNewEvent = false) {
     super();
 
     this._data = TripForm.parseEventToData(event);
     this._offers = offers;
+    this._destinations = destinations;
     this._isNewEvent = isNewEvent;
     this._startDatepicker = null;
     this._endDatepicker = null;
@@ -246,7 +237,7 @@ export default class TripForm extends SmartView {
   }
 
   getTemplate() {
-    return createTripFormTemplate(this._data, this._offers, this._isNewEvent);
+    return createTripFormTemplate(this._data, this._offers, this._destinations, this._isNewEvent);
   }
 
   restoreHandlers() {
@@ -318,7 +309,7 @@ export default class TripForm extends SmartView {
 
   _checkDestinationValidation(input) {
     let isValid = false;
-    const isDataCorrect = DESTINATIONS.includes(input.value);
+    const isDataCorrect = this._destinations.includes(this._destinations.find((destination) => destination.name === input.value));
 
     if (input.validity.valueMissing || input.value === ``) {
       input.setCustomValidity(`Select value from the list below, please!`);
@@ -356,7 +347,7 @@ export default class TripForm extends SmartView {
     this.updateData({
       type: {
         name: value,
-        offers: generateOffersByType(value)
+        offers: []
       }
     });
   }
@@ -365,11 +356,13 @@ export default class TripForm extends SmartView {
     evt.preventDefault();
 
     if (this._checkDestinationValidation(evt.target)) {
+      const targetedDestination = this._destinations.find((item) => item.name === evt.target.value);
+
       this.updateData({
         city: {
-          name: evt.target.value,
-          description: generateDescription(),
-          photos: generatePhotos(),
+          name: targetedDestination.name,
+          description: targetedDestination.description,
+          photos: targetedDestination.pictures,
         }
       });
     } else {
@@ -413,7 +406,9 @@ export default class TripForm extends SmartView {
     evt.preventDefault();
 
     const type = Object.assign({}, this._data.type);
-    const targetItem = this._offers.find((item) => item.type === type.name).offers.find((offer) => offer.label === OffersNameToLabel[evt.target.value]);
+    const targetItem = this._offers
+      .find((item) => item.type === type.name).offers
+      .find((offer) => offer.label.toLowerCase().replace(/ /g, `-`) === evt.target.value);
 
     if (evt.target.checked) {
       type.offers.push(targetItem);

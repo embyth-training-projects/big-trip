@@ -1,12 +1,8 @@
-export const TRIP_EVENTS_COUNT = 20;
-
 export const MAX_OFFERS_DISPLAY = 3;
 
 export const MAX_CITIES_DISPLAY = 3;
 
 export const TEXT_DIVIDER = `&nbsp;&mdash;&nbsp;`;
-
-export const DESTINATIONS = [`Amsterdam`, `Geneva`, `Chamonix`, `Saint Petersburg`, `Berlin`, `Paris`, `Monaco`, `London`];
 
 export const EVENT_TYPE = {
   TRANSFER: [`taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`],
@@ -32,19 +28,6 @@ export const STATISTICS_LABELS = {
     {name: `sightseeing`, label: `🏛 SIGHTSEEING`},
     {name: `restaurant`, label: `🍴 RESTAURANT`}
   ],
-};
-
-export const OffersNameToLabel = {
-  [`seats`]: `Choose seats`,
-  [`meal`]: `Add meal`,
-  [`uber`]: `Order Uber`,
-  [`luggage`]: `Add luggage`,
-  [`lunch`]: `Lunch in city`,
-  [`train`]: `Travel by train`,
-  [`tickets`]: `Book tickets`,
-  [`breakfast`]: `Add breakfast`,
-  [`comfort`]: `Switch to comfort`,
-  [`rent`]: `Rent a car`,
 };
 
 export const RenderPosition = {

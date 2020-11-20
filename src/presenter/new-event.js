@@ -1,7 +1,7 @@
 import TripFormView from '../view/trip-form';
 import {remove, render} from '../utils/render';
 import {RenderPosition, UserAction, UpdateType, KeyCode, EVENT_TYPE} from '../const';
-import {generateId, generateOffersByType} from '../mock/trip';
+import {generateId} from '../utils/trip';
 
 const BLANK_EVENT = {
   city: {
@@ -11,11 +11,12 @@ const BLANK_EVENT = {
   },
   type: {
     name: EVENT_TYPE.TRANSFER[0],
-    offers: generateOffersByType(EVENT_TYPE.TRANSFER[0]),
+    offers: [],
   },
   price: 0,
   dateRange: [new Date(), new Date()],
   isFavorite: false,
+  id: generateId()
 };
 
 export default class NewEvent {
@@ -33,14 +34,14 @@ export default class NewEvent {
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
-  init(callback, offers) {
+  init(callback, offers, destinations) {
     if (this._eventEditComponent !== null) {
       return;
     }
 
     this._destroyCallback = callback;
 
-    this._eventEditComponent = new TripFormView(this._event, offers, this._isNewEvent);
+    this._eventEditComponent = new TripFormView(this._event, offers, destinations, this._isNewEvent);
     this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._eventEditComponent.setDeleteClickHandler(this._handleDeleteClick);
     this._eventEditComponent.setDatepickers();

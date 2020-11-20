@@ -21,14 +21,14 @@ export default class Event {
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
-  init(event, offers) {
+  init(event, offers, destinations) {
     this._event = event;
 
     const prevEventComponent = this._eventComponent;
     const prevEventEditComponent = this._eventEditComponent;
 
     this._eventComponent = new TripEventView(event);
-    this._eventEditComponent = new TripFormView(event, offers);
+    this._eventEditComponent = new TripFormView(event, offers, destinations);
 
     this._eventComponent.setEditClickHandler(this._handleEditClick);
     this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);

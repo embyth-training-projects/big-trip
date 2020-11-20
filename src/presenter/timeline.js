@@ -10,11 +10,12 @@ import {getTripDays, filterEventsByDay, sortEventsByTime, sortEventsByPrice} fro
 import {RenderPosition, SortType, UserAction, UpdateType, FilterType} from '../const';
 
 export default class Timeline {
-  constructor(timelineContainer, filterModel, eventsModel, offersModel) {
+  constructor(timelineContainer, filterModel, eventsModel, offersModel, destinationsModel) {
     this._timelineContainer = timelineContainer;
     this._filterModel = filterModel;
     this._eventsModel = eventsModel;
     this._offersModel = offersModel;
+    this._destinationsModel = destinationsModel;
 
     this._eventPresenter = {};
     this._currentSortType = SortType.DEFAULT;
@@ -50,7 +51,7 @@ export default class Timeline {
   createEvent(callback) {
     this._currentSortType = SortType.DEFAULT;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this._newEventPresenter.init(callback, this._getOffers());
+    this._newEventPresenter.init(callback, this._getOffers(), this._getDestinations());
   }
 
   _getEvents() {
@@ -70,6 +71,10 @@ export default class Timeline {
 
   _getOffers() {
     return this._offersModel.getOffers();
+  }
+
+  _getDestinations() {
+    return this._destinationsModel.getDestinations();
   }
 
   _handleModeChange() {
@@ -97,7 +102,7 @@ export default class Timeline {
   _handleModelEvent(updateType, data) {
     switch (updateType) {
       case UpdateType.PATCH:
-        this._eventPresenter[data.id].init(data, this._getOffers());
+        this._eventPresenter[data.id].init(data, this._getOffers(), this._getDestinations());
         break;
       case UpdateType.MINOR:
         this._clearTimeline();
@@ -132,7 +137,7 @@ export default class Timeline {
 
   _renderEvent(event, container) {
     const eventPresenter = new EventPresenter(container, this._handleViewAction, this._handleModeChange);
-    eventPresenter.init(event, this._getOffers());
+    eventPresenter.init(event, this._getOffers(), this._getDestinations());
     this._eventPresenter[event.id] = eventPresenter;
   }
 
