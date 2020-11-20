@@ -11,6 +11,8 @@ import StatisticsPresenter from './presenter/statistics';
 
 import Api from './api';
 
+import {UpdateType} from './const';
+
 const AUTHORIZATION = `Basic 249u1jnlknijvfg=`;
 const END_POINT = `https://12.ecmascript.pages.academy/big-trip`;
 
@@ -37,6 +39,14 @@ menuPresenter.init();
 filterPresenter.init();
 timelinePresenter.init();
 
-api.getEvents().then((events) => eventsModel.setEvents(events));
-api.getOffers().then((offers) => offersModel.setOffers(offers));
-api.getDestinations().then((destinations) => destinationsModel.setDestinations(destinations));
+api.getEvents()
+  .then((events) => eventsModel.setEvents(UpdateType.INIT, events))
+  .catch(() => eventsModel.setEvents([]));
+
+api.getOffers()
+  .then((offers) => offersModel.setOffers(offers))
+  .catch(() => offersModel.setOffers([]));
+
+api.getDestinations()
+  .then((destinations) => destinationsModel.setDestinations(destinations))
+  .catch(() => destinationsModel.setDestinations([]));
