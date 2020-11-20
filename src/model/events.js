@@ -54,4 +54,39 @@ export default class Events extends Observer {
 
     this._notify(updateType);
   }
+
+  static adaptToClient(event) {
+    return {
+      city: {
+        name: event.destination.name,
+        description: event.destination.description,
+        photos: event.destination.pictures,
+      },
+      type: {
+        name: event.type,
+        offers: event.offers,
+      },
+      price: event.base_price,
+      dateRange: [event.date_from, event.date_to],
+      id: event.id,
+      isFavorite: event.is_favorite
+    };
+  }
+
+  static adaptToServer(event) {
+    return {
+      "base_price": event.price,
+      "date_from": event.dateRange[0].toISOString(),
+      "date_to": event.dateRange[1].toISOString(),
+      "destination": {
+        name: event.city.name,
+        description: event.city.description,
+        pictures: event.city.photos,
+      },
+      "id": event.id,
+      "is_favorite": event.isFavorite,
+      "offers": event.type.offers,
+      "type": event.type.name
+    };
+  }
 }

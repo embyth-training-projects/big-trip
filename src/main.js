@@ -24,9 +24,7 @@ const offers = generateOffers();
 
 const api = new Api(END_POINT, AUTHORIZATION);
 
-api.getPoints().then((points) => {
-  console.log(points);
-});
+api.getEvents().then((responseEvents) => console.log(responseEvents));
 
 const tripMainElement = document.querySelector(`.trip-main`);
 const menuContainer = tripMainElement.querySelector(`.trip-main__trip-controls`);
