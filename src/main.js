@@ -1,6 +1,7 @@
 import EventsModel from './model/events';
 import FilterModel from './model/filter';
 import OffersModel from './model/offers';
+import DestinationsModel from './model/destinations';
 
 import InfoPresenter from './presenter/info';
 import MenuPresenter from './presenter/menu';
@@ -23,9 +24,10 @@ const tripEventsElement = document.querySelector(`.trip-events`);
 const eventsModel = new EventsModel();
 const filterModel = new FilterModel();
 const offersModel = new OffersModel();
+const destinationsModel = new DestinationsModel();
 
 const infoPresenter = new InfoPresenter(tripMainElement, eventsModel);
-const timelinePresenter = new TimelinePresenter(tripEventsElement, filterModel, eventsModel, offersModel);
+const timelinePresenter = new TimelinePresenter(tripEventsElement, filterModel, eventsModel, offersModel, destinationsModel);
 const statisticsPresenter = new StatisticsPresenter(tripEventsElement, eventsModel);
 const menuPresenter = new MenuPresenter(menuContainer, timelinePresenter, statisticsPresenter);
 const filterPresenter = new FilterPresenter(filterContainer, filterModel, eventsModel);
@@ -37,3 +39,4 @@ timelinePresenter.init();
 
 api.getEvents().then((events) => eventsModel.setEvents(events));
 api.getOffers().then((offers) => offersModel.setOffers(offers));
+api.getDestinations().then((destinations) => destinationsModel.setDestinations(destinations));
