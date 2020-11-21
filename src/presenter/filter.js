@@ -9,6 +9,7 @@ export default class Filter {
     this._eventsModel = eventsModel;
 
     this._currentFilter = null;
+    this._isFiltersActive = false;
 
     this._filterComponent = null;
 
@@ -25,7 +26,10 @@ export default class Filter {
     const prevFilterComponent = this._filterComponent;
 
     this._filterComponent = new FilterView(this._currentFilter);
-    this._filterComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
+
+    if (this._isFiltersActive) {
+      this._filterComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
+    }
 
     if (prevFilterComponent === null) {
       render(this._filterContainer, this._filterComponent, RenderPosition.AFTEREND);
@@ -36,7 +40,11 @@ export default class Filter {
     remove(prevFilterComponent);
   }
 
-  _handleModelEvent() {
+  _handleModelEvent(updateType) {
+    if (updateType === UpdateType.INIT) {
+      this._isFiltersActive = true;
+    }
+
     this.init();
   }
 

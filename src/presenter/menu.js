@@ -1,15 +1,17 @@
 import MenuView from '../view/menu';
 import NewEventButtonView from '../view/new-event-button';
-import {MenuItem, RenderPosition} from '../const';
+import {MenuItem, RenderPosition, UpdateType} from '../const';
 import {render} from '../utils/render';
 
 export default class Menu {
-  constructor(menuContainer, timelinePresenter, statisticsPresenter) {
+  constructor(menuContainer, timelinePresenter, statisticsPresenter, eventsModel) {
     this._menuContainer = menuContainer;
     this._timelinePresenter = timelinePresenter;
     this._statisticsPresenter = statisticsPresenter;
+    this._eventsModel = eventsModel;
 
     this._currentMenuItem = MenuItem.TABLE;
+    this._isMenuActive = false;
 
     this._siteMenuComponent = new MenuView();
     this._newEventButtonComponent = new NewEventButtonView();
@@ -17,6 +19,9 @@ export default class Menu {
     this._handleSiteMenuClick = this._handleSiteMenuClick.bind(this);
     this._handleNewEventButtonClick = this._handleNewEventButtonClick.bind(this);
     this._handleNewEventButtonState = this._handleNewEventButtonState.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
+
+    this._eventsModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -24,9 +29,15 @@ export default class Menu {
     render(menuTitle, this._siteMenuComponent, RenderPosition.AFTEREND);
     render(this._menuContainer, this._newEventButtonComponent, RenderPosition.AFTEREND);
 
+    if (!this._isMenuActive) {
+      this._newEventButtonComponent.disableButton();
+      return;
+    }
+
     this._siteMenuComponent.setMenuClickHandler(this._handleSiteMenuClick);
     this._siteMenuComponent.setActiveMenuItem(this._currentMenuItem);
     this._newEventButtonComponent.setNewEventButtonClick(this._handleNewEventButtonClick);
+    this._newEventButtonComponent.enableButton();
   }
 
   _handleNewEventButtonState() {
@@ -62,5 +73,13 @@ export default class Menu {
     }
 
     this._currentMenuItem = menuItem;
+  }
+
+  _handleModelEvent(updateType) {
+    if (updateType === UpdateType.INIT) {
+      this._isMenuActive = true;
+    }
+
+    this.init();
   }
 }

@@ -31,7 +31,7 @@ const destinationsModel = new DestinationsModel();
 const infoPresenter = new InfoPresenter(tripMainElement, eventsModel);
 const timelinePresenter = new TimelinePresenter(tripEventsElement, filterModel, eventsModel, offersModel, destinationsModel);
 const statisticsPresenter = new StatisticsPresenter(tripEventsElement, eventsModel);
-const menuPresenter = new MenuPresenter(menuContainer, timelinePresenter, statisticsPresenter);
+const menuPresenter = new MenuPresenter(menuContainer, timelinePresenter, statisticsPresenter, eventsModel);
 const filterPresenter = new FilterPresenter(filterContainer, filterModel, eventsModel);
 
 infoPresenter.init();
