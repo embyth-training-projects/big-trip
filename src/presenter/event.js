@@ -2,7 +2,7 @@ import TripEventView from '../view/trip-event';
 import TripFormView from '../view/trip-form';
 import {render, replace, remove} from '../utils/render';
 import {isDatesChanged, isPriceChanged} from '../utils/trip';
-import {RenderPosition, KeyCode, Mode, UserAction, UpdateType} from '../const';
+import {RenderPosition, KeyCode, Mode, UserAction, UpdateType, State} from '../const';
 
 export default class Event {
   constructor(eventContainer, changeData, changeMode) {
@@ -45,7 +45,8 @@ export default class Event {
     }
 
     if (this._mode === Mode.EDITING) {
-      replace(this._eventEditComponent, prevEventEditComponent);
+      replace(this._eventComponent, prevEventEditComponent);
+      this._mode = Mode.DEFAULT;
     }
 
     remove(prevEventComponent);
@@ -61,6 +62,23 @@ export default class Event {
   destroy() {
     remove(this._eventComponent);
     remove(this._eventEditComponent);
+  }
+
+  setViewState(state) {
+    switch (state) {
+      case State.SAVING:
+        this._eventEditComponent.updateData({
+          isDisabled: true,
+          isSaving: true,
+        });
+        break;
+      case State.DELETING:
+        this._eventEditComponent.updateData({
+          isDisabled: true,
+          isDeleting: true,
+        });
+        break;
+    }
   }
 
   _replacePointToForm() {
@@ -100,7 +118,6 @@ export default class Event {
         isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
         event
     );
-    this._replaceFormToPoint();
   }
 
   _handleDeleteClick(event) {

@@ -95,3 +95,8 @@ export const StatisticType = {
     FORMATTER: `H`,
   },
 };
+
+export const State = {
+  SAVING: `SAVING`,
+  DELETING: `DELETING`,
+};
