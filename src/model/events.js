@@ -78,7 +78,7 @@ export default class Events extends Observer {
 
   static adaptToServer(event) {
     return {
-      "base_price": event.price,
+      "base_price": +event.price,
       "date_from": event.dateRange[0].toISOString(),
       "date_to": event.dateRange[1].toISOString(),
       "destination": {
@@ -88,7 +88,7 @@ export default class Events extends Observer {
       },
       "id": event.id,
       "is_favorite": event.isFavorite,
-      "offers": event.type.offers,
+      "offers": OffersModel.adaptToServer(event.type.offers),
       "type": event.type.name
     };
   }

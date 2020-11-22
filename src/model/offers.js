@@ -34,4 +34,13 @@ export default class Offers extends Observer {
       };
     });
   }
+
+  static adaptToServer(offers) {
+    return offers.map((item) => {
+      return {
+        title: item.label,
+        price: item.price,
+      };
+    });
+  }
 }

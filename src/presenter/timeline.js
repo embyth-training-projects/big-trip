@@ -11,12 +11,13 @@ import {getTripDays, filterEventsByDay, sortEventsByTime, sortEventsByPrice} fro
 import {RenderPosition, SortType, UserAction, UpdateType, FilterType} from '../const';
 
 export default class Timeline {
-  constructor(timelineContainer, filterModel, eventsModel, offersModel, destinationsModel) {
+  constructor(timelineContainer, filterModel, eventsModel, offersModel, destinationsModel, api) {
     this._timelineContainer = timelineContainer;
     this._filterModel = filterModel;
     this._eventsModel = eventsModel;
     this._offersModel = offersModel;
     this._destinationsModel = destinationsModel;
+    this._api = api;
 
     this._eventPresenter = {};
     this._currentSortType = SortType.DEFAULT;
@@ -91,7 +92,8 @@ export default class Timeline {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_EVENT:
-        this._eventsModel.updateEvent(updateType, update);
+        this._api.updateEvent(update)
+          .then((response) => this._eventsModel.updateEvent(updateType, response));
         break;
       case UserAction.ADD_EVENT:
         this._eventsModel.addEvent(updateType, update);
