@@ -94,17 +94,20 @@ export default class Timeline {
       case UserAction.UPDATE_EVENT:
         this._eventPresenter[update.id].setViewState(State.SAVING);
         this._api.updateEvent(update)
-          .then((response) => this._eventsModel.updateEvent(updateType, response));
+          .then((response) => this._eventsModel.updateEvent(updateType, response))
+          .catch(() => this._eventPresenter[update.id].setViewState(State.ABORTING));
         break;
       case UserAction.ADD_EVENT:
         this._newEventPresenter.setSaving();
         this._api.addEvent(update)
-          .then((response) => this._eventsModel.addEvent(updateType, response));
+          .then((response) => this._eventsModel.addEvent(updateType, response))
+          .catch(() => this._newEventPresenter.setAborting());
         break;
       case UserAction.DELETE_EVENT:
         this._eventPresenter[update.id].setViewState(State.DELETING);
         this._api.deleteEvent(update)
-          .then(() => this._eventsModel.deleteEvent(updateType, update));
+          .then(() => this._eventsModel.deleteEvent(updateType, update))
+          .catch(() => this._eventPresenter[update.id].setViewState(State.ABORTING));
         break;
     }
   }

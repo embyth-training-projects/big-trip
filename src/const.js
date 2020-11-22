@@ -2,6 +2,8 @@ export const MAX_OFFERS_DISPLAY = 3;
 
 export const MAX_CITIES_DISPLAY = 3;
 
+export const SHAKE_ANIMATION_TIMEOUT = 600;
+
 export const TEXT_DIVIDER = `&nbsp;&mdash;&nbsp;`;
 
 export const EVENT_TYPE = {
@@ -99,4 +101,5 @@ export const StatisticType = {
 export const State = {
   SAVING: `SAVING`,
   DELETING: `DELETING`,
+  ABORTING: `ABORTING`,
 };
