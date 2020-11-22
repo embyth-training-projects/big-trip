@@ -9,7 +9,7 @@ import TimelinePresenter from './presenter/timeline';
 import FilterPresenter from './presenter/filter';
 import StatisticsPresenter from './presenter/statistics';
 
-import Api from './api';
+import Api from './api/index';
 
 import {UpdateType} from './const';
 

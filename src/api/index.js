@@ -1,5 +1,5 @@
-import EventsModel from './model/events';
-import OffersModel from './model/offers';
+import EventsModel from '../model/events';
+import OffersModel from '../model/offers';
 
 const Method = {
   GET: `GET`,
