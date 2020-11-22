@@ -771,6 +771,10 @@ main {
     text-align: center; }
   .event__input--price {
     width: 66px; }
+  .event__input:disabled {
+    opacity: 0.46;
+    cursor: default;
+  }
 
 .event__save-btn {
   margin-right: 18px; }
@@ -796,6 +800,9 @@ main {
     opacity: 0.8; }
   .event__reset-btn:active {
     opacity: 0.6; }
+  .event__reset-btn:disabled {
+    opacity: 0.46;
+    cursor: default; }
 
 .event__favorite-btn {
   margin-left: 36px;
@@ -893,6 +900,9 @@ main {
 
 .event__offer-checkbox:checked + .event__offer-label {
   background-color: #0d8ae4; }
+.event__offer-checkbox:disabled + .event__offer-label {
+  opacity: 0.46;
+  cursor: default; }
 
 .event__destination-description {
   width: 560px;

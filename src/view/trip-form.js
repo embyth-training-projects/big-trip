@@ -7,23 +7,23 @@ import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import '../../node_modules/flatpickr/dist/themes/material_blue.css';
 
-const createOfferItemTemplate = (offer, isChecked, id) => {
+const createOfferItemTemplate = (offer, isChecked, id, isDisabled) => {
   const {label, price} = offer;
   const name = label.toLowerCase().replace(/ /g, `-`);
 
   return (
     `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${name}-${id}" type="checkbox" name="event-offer-${name}" ${isChecked} value="${name}">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${name}-${id}" type="checkbox" name="event-offer-${name}" ${isChecked} value="${name}" ${isDisabled ? `disabled` : ``}>
       <label class="event__offer-label" for="event-offer-${name}-${id}">
         <span class="event__offer-title">${label}</span>
-        &plus;
-        &euro;&nbsp;<span class="event__offer-price">${price}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${price}</span>
       </label>
     </div>`
   );
 };
 
-const createOffersTemplate = (offers, totalOffers, id) => {
+const createOffersTemplate = (offers, totalOffers, id, isDisabled) => {
   const labels = offers.map((offer) => offer.label);
   if (totalOffers.length) {
     return (
@@ -34,7 +34,7 @@ const createOffersTemplate = (offers, totalOffers, id) => {
           ${totalOffers
             .map((offer) => {
               const isChecked = labels.includes(offer.label) ? `checked` : ``;
-              return createOfferItemTemplate(offer, isChecked, id);
+              return createOfferItemTemplate(offer, isChecked, id, isDisabled);
             })
             .join(``)}
         </div>
@@ -107,7 +107,7 @@ const createTypeListTemplate = (id, typeName) => {
 };
 
 const createTripFormTemplate = (event, offersData, destinationsData, isNewEvent) => {
-  const {id, city, type, price, dateRange, isFavorite} = event;
+  const {id, city, type, price, dateRange, isFavorite, isDisabled, isSaving, isDeleting} = event;
   const {name: cityName, description, photos} = city;
   const {name: typeName, offers} = type;
 
@@ -117,10 +117,12 @@ const createTripFormTemplate = (event, offersData, destinationsData, isNewEvent)
   const formattedStartTime = formatDateTime(dateRange[0]);
   const formattedEndTime = formatDateTime(dateRange[1]);
 
-  const offersTemplate = createOffersTemplate(offers, totalOffers, id);
+  const offersTemplate = createOffersTemplate(offers, totalOffers, id, isDisabled);
   const photosTemplate = createPhotosTemplate(photos);
   const typeListTemplate = createTypeListTemplate(id, typeName);
   const destinationsDatalistTemplate = createDestinationsDatalistTemplate(destinationsData, id);
+
+  const resetFormText = isNewEvent ? `Cancel` : `${isDeleting ? `Deleting` : `Delete`}`;
 
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
@@ -130,7 +132,7 @@ const createTripFormTemplate = (event, offersData, destinationsData, isNewEvent)
             <span class="visually-hidden">Choose event type</span>
             <img class="event__type-icon" width="17" height="17" src="img/icons/${typeName}.png" alt="Event type icon">
           </label>
-          <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
+          <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox" ${isDisabled ? `disabled` : ``}>
           ${typeListTemplate}
         </div>
 
@@ -138,7 +140,7 @@ const createTripFormTemplate = (event, offersData, destinationsData, isNewEvent)
           <label class="event__label  event__type-output" for="event-destination-${id}">
             ${typeWithLabel}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${cityName}" list="destination-list-${id}">
+          <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${cityName}" list="destination-list-${id}" ${isDisabled ? `disabled` : ``}>
           ${destinationsDatalistTemplate}
         </div>
 
@@ -146,12 +148,12 @@ const createTripFormTemplate = (event, offersData, destinationsData, isNewEvent)
           <label class="visually-hidden" for="event-start-time-${id}">
             From
           </label>
-          <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${formattedStartTime}">
+          <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${formattedStartTime}" ${isDisabled ? `disabled` : ``}>
           &mdash;
           <label class="visually-hidden" for="event-end-time-${id}">
             To
           </label>
-          <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${formattedEndTime}">
+          <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${formattedEndTime}" ${isDisabled ? `disabled` : ``}>
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -159,15 +161,15 @@ const createTripFormTemplate = (event, offersData, destinationsData, isNewEvent)
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${price}">
+          <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${price}" ${isDisabled ? `disabled` : ``}>
         </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">${isNewEvent ? `Cancel` : `Delete`}</button>
+        <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? `disabled` : ``}>${isSaving ? `Saving` : `Save`}</button>
+        <button class="event__reset-btn" type="reset" ${isDisabled ? `disabled` : ``}>${resetFormText}</button>
 
     ${isNewEvent
       ? ``
-      : `<input id="event-favorite-${id}" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
+      : `<input id="event-favorite-${id}" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``} ${isDisabled ? `disabled` : ``}>
         <label class="event__favorite-btn" for="event-favorite-${id}">
           <span class="visually-hidden">Add to favorite</span>
           <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
@@ -175,7 +177,7 @@ const createTripFormTemplate = (event, offersData, destinationsData, isNewEvent)
           </svg>
         </label>
 
-        <button class="event__rollup-btn" type="button">
+        <button class="event__rollup-btn" type="button" ${isDisabled ? `disabled` : ``}>
           <span class="visually-hidden">Close event</span>
         </button>`}
 
@@ -467,10 +469,20 @@ export default class TripForm extends SmartView {
   }
 
   static parseEventToData(event) {
-    return Object.assign({}, event);
+    return Object.assign({}, event, {
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false,
+    });
   }
 
   static parseDataToEvent(data) {
-    return Object.assign({}, data);
+    data = Object.assign({}, data);
+
+    delete data.isDisabled;
+    delete data.isSaving;
+    delete data.isDeleting;
+
+    return data;
   }
 }
