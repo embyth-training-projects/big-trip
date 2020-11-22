@@ -52,3 +52,9 @@ Promise.all([
 }).catch((error) => {
   throw new Error(`Something went wrong! ${error.status}: ${error.statusText}`);
 });
+
+window.addEventListener(`load`, () => {
+  navigator.serviceWorker.register(`/sw.js`)
+    .then(() => console.log(`ServiceWorker available!`)) // eslint-disable-line
+    .catch(() => console.log(`ServiceWorker isn't available!`)); // eslint-disable-line
+});
