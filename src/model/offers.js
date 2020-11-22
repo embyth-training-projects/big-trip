@@ -26,21 +26,14 @@ export default class Offers extends Observer {
     });
   }
 
-  static adaptToEvent(offers) {
-    return offers.map((item) => {
-      return {
-        label: item.title,
-        price: item.price,
-      };
-    });
-  }
-
-  static adaptToServer(offers) {
-    return offers.map((item) => {
-      return {
-        title: item.label,
-        price: item.price,
-      };
+  static adaptToServer(offer) {
+    return Object.assign(offer, {
+      offers: offer.offers.map((item) => {
+        return {
+          title: item.label,
+          price: item.price,
+        };
+      })
     });
   }
 }
