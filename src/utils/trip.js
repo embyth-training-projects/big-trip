@@ -1,8 +1,6 @@
 import {EVENT_TYPE} from '../const';
 import moment from 'moment';
 
-export const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
-
 export const formatEventType = (type) => {
   const typeText = type.charAt(0).toUpperCase() + type.slice(1);
   const label = EVENT_TYPE.ACTIVITY.includes(type) ? `in` : `to`;

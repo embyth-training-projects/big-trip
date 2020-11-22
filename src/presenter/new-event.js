@@ -1,7 +1,6 @@
 import TripFormView from '../view/trip-form';
 import {remove, render} from '../utils/render';
 import {RenderPosition, UserAction, UpdateType, KeyCode, EVENT_TYPE} from '../const';
-import {generateId} from '../utils/trip';
 
 const BLANK_EVENT = {
   city: {
@@ -15,8 +14,7 @@ const BLANK_EVENT = {
   },
   price: 0,
   dateRange: [new Date(), new Date()],
-  isFavorite: false,
-  id: generateId()
+  isFavorite: false
 };
 
 export default class NewEvent {
@@ -71,7 +69,7 @@ export default class NewEvent {
     this._changeData(
         UserAction.ADD_EVENT,
         UpdateType.MINOR,
-        Object.assign({id: generateId()}, event)
+        event
     );
 
     this.destroy();
