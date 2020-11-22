@@ -8,7 +8,7 @@ import NewEventPresenter from './new-event';
 import {render, remove} from '../utils/render';
 import {filter} from '../utils/filter';
 import {getTripDays, filterEventsByDay, sortEventsByTime, sortEventsByPrice} from '../utils/trip';
-import {RenderPosition, SortType, UserAction, UpdateType, FilterType} from '../const';
+import {RenderPosition, SortType, UserAction, UpdateType, FilterType, State} from '../const';
 
 export default class Timeline {
   constructor(timelineContainer, filterModel, eventsModel, offersModel, destinationsModel, api) {
@@ -92,14 +92,17 @@ export default class Timeline {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_EVENT:
+        this._eventPresenter[update.id].setViewState(State.SAVING);
         this._api.updateEvent(update)
           .then((response) => this._eventsModel.updateEvent(updateType, response));
         break;
       case UserAction.ADD_EVENT:
+        this._newEventPresenter.setSaving();
         this._api.addEvent(update)
           .then((response) => this._eventsModel.addEvent(updateType, response));
         break;
       case UserAction.DELETE_EVENT:
+        this._eventPresenter[update.id].setViewState(State.DELETING);
         this._api.deleteEvent(update)
           .then(() => this._eventsModel.deleteEvent(updateType, update));
         break;
