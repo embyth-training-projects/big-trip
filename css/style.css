@@ -230,6 +230,10 @@ main {
   .trip-tabs__btn--active, .trip-tabs__btn--active:hover, .trip-tabs__btn--active:active {
     opacity: 1;
     cursor: default; }
+  .trip-tabs__btn--disable {
+    opacity: 0.46;
+    cursor: default;
+    pointer-events: none;}
 
 .trip-filters {
   display: -ms-flexbox;
@@ -266,6 +270,10 @@ main {
 .trip-filters__filter-input:checked + .trip-filters__filter-label {
   opacity: 1;
   cursor: default; }
+.trip-filters__filter-input:disabled + .trip-filters__filter-label {
+  opacity: 0.46;
+  cursor: default;
+  pointer-events: none; }
 
 .trip-search {
   -ms-flex-positive: 1;
@@ -771,6 +779,10 @@ main {
     text-align: center; }
   .event__input--price {
     width: 66px; }
+  .event__input:disabled {
+    opacity: 0.46;
+    cursor: default;
+  }
 
 .event__save-btn {
   margin-right: 18px; }
@@ -796,6 +808,9 @@ main {
     opacity: 0.8; }
   .event__reset-btn:active {
     opacity: 0.6; }
+  .event__reset-btn:disabled {
+    opacity: 0.46;
+    cursor: default; }
 
 .event__favorite-btn {
   margin-left: 36px;
@@ -893,6 +908,9 @@ main {
 
 .event__offer-checkbox:checked + .event__offer-label {
   background-color: #0d8ae4; }
+.event__offer-checkbox:disabled + .event__offer-label {
+  opacity: 0.46;
+  cursor: default; }
 
 .event__destination-description {
   width: 560px;
@@ -930,3 +948,28 @@ main {
 
 .statistics__item:not(:last-child) {
   margin-bottom: 78px; }
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-5px);
+  }
+
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(5px);
+  }
+}
+.shake {
+  animation: shake 0.6s;
+}
