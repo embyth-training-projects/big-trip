@@ -230,6 +230,10 @@ main {
   .trip-tabs__btn--active, .trip-tabs__btn--active:hover, .trip-tabs__btn--active:active {
     opacity: 1;
     cursor: default; }
+  .trip-tabs__btn--disable {
+    opacity: 0.46;
+    cursor: default;
+    pointer-events: none;}
 
 .trip-filters {
   display: -ms-flexbox;
@@ -266,6 +270,10 @@ main {
 .trip-filters__filter-input:checked + .trip-filters__filter-label {
   opacity: 1;
   cursor: default; }
+.trip-filters__filter-input:disabled + .trip-filters__filter-label {
+  opacity: 0.46;
+  cursor: default;
+  pointer-events: none; }
 
 .trip-search {
   -ms-flex-positive: 1;

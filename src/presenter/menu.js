@@ -31,11 +31,13 @@ export default class Menu {
 
     if (!this._isMenuActive) {
       this._newEventButtonComponent.disableButton();
+      this._siteMenuComponent.disableMenu();
       return;
     }
 
     this._siteMenuComponent.setMenuClickHandler(this._handleSiteMenuClick);
     this._siteMenuComponent.setActiveMenuItem(this._currentMenuItem);
+    this._siteMenuComponent.enableMenu();
     this._newEventButtonComponent.setNewEventButtonClick(this._handleNewEventButtonClick);
     this._newEventButtonComponent.enableButton();
   }

@@ -27,8 +27,11 @@ export default class Filter {
 
     this._filterComponent = new FilterView(this._currentFilter);
 
+    this._filterComponent.disableFilters();
+
     if (this._isFiltersActive) {
       this._filterComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
+      this._filterComponent.enableFilters();
     }
 
     if (prevFilterComponent === null) {

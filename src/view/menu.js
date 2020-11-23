@@ -49,4 +49,16 @@ export default class Menu extends AbstractView {
       .querySelectorAll(`.trip-tabs__btn`)
       .forEach((item) => item.addEventListener(`click`, this._menuClickHandler));
   }
+
+  enableMenu() {
+    this.getElement()
+    .querySelectorAll(`.trip-tabs__btn`)
+    .forEach((item) => item.classList.remove(`trip-tabs__btn--disable`));
+  }
+
+  disableMenu() {
+    this.getElement()
+    .querySelectorAll(`.trip-tabs__btn`)
+    .forEach((item) => item.classList.add(`trip-tabs__btn--disable`));
+  }
 }
