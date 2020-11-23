@@ -4,10 +4,11 @@ import {MenuItem, RenderPosition, UpdateType} from '../const';
 import {render} from '../utils/render';
 
 export default class Menu {
-  constructor(menuContainer, timelinePresenter, statisticsPresenter, eventsModel) {
+  constructor(menuContainer, timelinePresenter, statisticsPresenter, filterPresenter, eventsModel) {
     this._menuContainer = menuContainer;
     this._timelinePresenter = timelinePresenter;
     this._statisticsPresenter = statisticsPresenter;
+    this._filterPresenter = filterPresenter;
     this._eventsModel = eventsModel;
 
     this._currentMenuItem = MenuItem.TABLE;
@@ -66,10 +67,12 @@ export default class Menu {
     switch (menuItem) {
       case MenuItem.TABLE:
         this._statisticsPresenter.destroy();
+        this._filterPresenter.enableFilters();
         this._timelinePresenter.init();
         break;
       case MenuItem.STATS:
         this._timelinePresenter.destroy();
+        this._filterPresenter.disableFilters();
         this._statisticsPresenter.init();
         break;
     }
