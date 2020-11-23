@@ -103,3 +103,9 @@ export const State = {
   DELETING: `DELETING`,
   ABORTING: `ABORTING`,
 };
+
+export const StoreType = {
+  EVENTS: `events`,
+  OFFERS: `offers`,
+  DESTINATIONS: `destinations`,
+};
